@@ -2,7 +2,7 @@
   "name": "object-traversal",
   "author": "Devimal",
   "module": "dist/lib.esm.js",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {

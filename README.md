@@ -10,6 +10,17 @@ TODO
 
 TODO
 
+## Benchmarks
+
+TODO
+
+## Planned
+* [ ] Docs
+* [ ] Configurable BFS/DFS
+* [ ] Iterator
+* [ ] Max depth
+* [ ] Timeouts
+
 ## Built using
 
 [TSDX](https://github.com/formium/tsdx)<br>

@@ -1,4 +1,4 @@
-const { traverse } = require('../dist');
+const { traverse } = require('object-traversal');
 
 const example = {
   name: 'Hello World!',

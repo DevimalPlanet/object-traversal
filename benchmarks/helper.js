@@ -1,43 +1,24 @@
-const smallSizeObject = {};
-const midSizeObject = {};
-const largeSizeObject = {};
-const hugeSizeObject = {};
-const largeCyclicObject = {};
+function createBenchMock(objectSizes = 10, objectDepth = 10, cyclic = true) {
+  const mocks = [];
+  for (let d = 0; d < objectDepth; d++) {
+    const benchMock = {};
+    for (let i = 0; i < objectSizes; i++) {
+      benchMock[i] = i;
+    }
+    mocks.push(benchMock);
+  }
 
-const FACTOR = 10;
-const smallNumberOfKeys = FACTOR;
-const midNumberOfKeys = FACTOR ** 2;
-const largeNumberOfKeys = FACTOR ** 3;
-const hugeNumberOfKeys = FACTOR ** 4;
+  const rootMock = mocks[0];
+  for (let index = 0; index < mocks.length; index++) {
+    const mock = mocks[index];
+    mock[objectSizes + index] = mocks[index + 1];
 
-for (let i = 0; i < smallNumberOfKeys; i++) {
-  smallSizeObject[i] = i;
+    if (cyclic) {
+      mock[objectSizes + index + 2] = rootMock;
+    }
+  }
+
+  return rootMock;
 }
 
-for (let i = 0; i < midNumberOfKeys; i++) {
-  midSizeObject[i] = { ...smallSizeObject };
-}
-
-for (let i = 0; i < largeNumberOfKeys; i++) {
-  largeSizeObject[i] = { ...smallSizeObject };
-}
-
-for (let i = 0; i < hugeNumberOfKeys; i++) {
-  hugeSizeObject[i] = { ...smallSizeObject };
-}
-
-for (let i = 0; i < largeNumberOfKeys; i++) {
-  largeCyclicObject[i] = {
-    ...smallSizeObject,
-    largeCyclicObject,
-    smallSizeObject: largeCyclicObject[i - 1],
-  };
-}
-
-module.exports = {
-  smallSizeObject,
-  midSizeObject,
-  largeSizeObject,
-  hugeSizeObject,
-  largeCyclicObject,
-};
+module.exports = { createBenchMock };

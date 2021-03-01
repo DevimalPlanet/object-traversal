@@ -11,7 +11,7 @@ Simple, performant and customizable utility for traversing and applying callback
 ### Transform
 
 ```javascript
-const { traverse } = require('../dist');
+const { traverse } = require('object-traversal');
 
 // dummy object
 const example = {
@@ -40,7 +40,7 @@ console.log(example);
 <details><summary>See example</summary>
 
 ```javascript
-const { traverse } = require('../dist');
+const { traverse } = require('object-traversal');
 
 const network = {
   name: 'Person1',
@@ -92,7 +92,7 @@ console.log(valuesOver25);
 <details><summary>See example</summary>
 
 ```javascript
-const { traverse } = require('../dist');
+const { traverse } = require('object-traversal');
 
 const network = {
   name: 'Person1',
@@ -141,7 +141,13 @@ console.log(pathToPeopleUnder30);
 
 ## Benchmarks
 
-TODO
+Up to 15x faster than popular alternatives. `npm run benchmark`:
+
+| Object size |         spec          | object-traversal ([npm](https://www.npmjs.com/package/object-traversal)) | traverse ([npm](https://www.npmjs.com/package/traverse)) |
+| :---------: | :-------------------: | :----------------------------------------------------------------------: | :------------------------------------------------------: |
+|    small    |   10 keys, depth 10   |                             141,300 ops/sec                              |                      21,241 ops/sec                      |
+|   medium    |  100 keys, depth 100  |                              2,227 ops/sec                               |                       258 ops/sec                        |
+|     big     | 1000 keys, depth 1000 |                              22.91 ops/sec                               |                       1.60 ops/sec                       |
 
 ## Planned
 

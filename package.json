@@ -12,6 +12,7 @@
     "test:watch": "tsdx test --watch",
     "test:cov": "tsdx test --coverage",
     "test:clear": "tsdx test --clearCache",
+    "benchmark": "tsdx build && node benchmarks/object-traversal.bench.js",
     "lint": "tsdx lint",
     "prepare": "tsdx build",
     "size": "size-limit",
@@ -58,6 +59,7 @@
     "benchmark": "^2.1.4",
     "husky": "^5.1.0",
     "size-limit": "^4.9.2",
+    "traverse": "^0.6.6",
     "tsdx": "^0.14.1",
     "tslib": "^2.1.0",
     "typescript": "^4.1.5"

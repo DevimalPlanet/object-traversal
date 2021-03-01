@@ -30,14 +30,13 @@ const network = {
 };
 
 const valuesOver25 = [];
-function findOver25(context) {
+
+traverse(network, context => {
   const { parent, key, value, meta } = context;
   if (key === 'age' && value > 25) {
     valuesOver25.push(value);
   }
-}
-
-traverse(network, findOver25);
+});
 
 console.log(valuesOver25);
 // [ 52, 42, 33 ]

@@ -13,7 +13,6 @@ Simple, performant and customizable utility for traversing and applying callback
 ```javascript
 const { traverse } = require('object-traversal');
 
-// dummy object
 const example = {
   name: 'Hello World!',
   age: 1,
@@ -21,23 +20,17 @@ const example = {
   friends: 3,
 };
 
-// transformation function
-function double(context) {
+traverse(example, context => {
   const { parent, key, value, meta } = context;
   if (typeof value === 'number') {
     parent[key] = value * 2;
   }
-}
+});
 
-// traverse and apply transform
-traverse(example, double);
-console.log(example);
 // { name: 'Hello World!', age: 2, accounts: 4, friends: 6 }
 ```
 
 ### Find deep nested matches
-
-<details><summary>See example</summary>
 
 ```javascript
 const { traverse } = require('object-traversal');
@@ -72,47 +65,42 @@ const network = {
 };
 
 const valuesOver25 = [];
-function findOver25(context) {
+
+traverse(network, context => {
   const { parent, key, value, meta } = context;
   if (key === 'age' && value > 25) {
     valuesOver25.push(value);
   }
-}
-
-traverse(network, findOver25);
+});
 
 console.log(valuesOver25);
 // [ 52, 42, 33 ]
 ```
 
-</details>
-
 ### Find paths
-
-<details><summary>See example</summary>
 
 ```javascript
 const { traverse } = require('object-traversal');
 
 const network = {
-  name: 'Person1',
+  name: 'Alice Doe',
   age: 52,
   friends: [
     {
-      name: 'Person2',
+      name: 'John Doe',
       age: 25,
       friends: [],
     },
     {
-      name: 'Person3',
+      name: 'Bob Doe',
       age: 42,
       friends: [
         {
-          name: 'Person4',
+          name: 'John Smith',
           age: 18,
           friends: [
             {
-              name: 'Person5',
+              name: 'Charlie Doe',
               age: 33,
               friends: [],
             },
@@ -123,21 +111,18 @@ const network = {
   ],
 };
 
-const pathToPeopleUnder30 = [];
-function findPathToPeopleUnder30(context) {
+const pathToPeopleNamedJohn = [];
+
+traverse(network, context => {
   const { parent, key, value, meta } = context;
-  if (typeof value.age === 'number' && value.age < 30) {
-    pathToPeopleUnder30.push(meta.currentPath);
+  if (value.name && value.name.startsWith('John')) {
+    pathToPeopleNamedJohn.push(meta.currentPath);
   }
-}
+});
 
-traverse(network, findPathToPeopleUnder30);
-
-console.log(pathToPeopleUnder30);
+console.log(pathToPeopleNamedJohn);
 // [ 'friends.0', 'friends.1.friends.0' ]
 ```
-
-</details>
 
 ## Benchmarks
 

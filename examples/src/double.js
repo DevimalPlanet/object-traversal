@@ -7,14 +7,12 @@ const example = {
   friends: 3,
 };
 
-function double(context) {
+traverse(example, context => {
   const { parent, key, value, meta } = context;
   if (typeof value === 'number') {
     parent[key] = value * 2;
   }
-}
-
-traverse(example, double);
+});
 
 console.log(example);
 // { name: 'Hello World!', age: 2, accounts: 4, friends: 6 }

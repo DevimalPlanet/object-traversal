@@ -1,4 +1,4 @@
-type ArbitraryObject = Record<string, any>
+type ArbitraryObject = Record<string, any>;
 
 export interface TraversalMeta {
   currentPath: string | null;
@@ -19,7 +19,10 @@ export type TraversalCallbackContext = {
 export type TraversalCallback = (context: TraversalCallbackContext) => void;
 
 /** Applies a given callback function to all properties of an object and its children objects */
-export const traverse = (root: any, callback: TraversalCallback) => {
+export const traverse = (
+  root: ArbitraryObject,
+  callback: TraversalCallback
+): void => {
   if (typeof root !== 'object' || root === null) {
     throw new Error('First argument must be an object');
   }

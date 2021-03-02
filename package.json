@@ -74,5 +74,22 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/DevimalPlanet/object-traversal.git"
-  }
+  },
+  "keywords": [
+    "traverse",
+    "object",
+    "traversal",
+    "recurse",
+    "recursive",
+    "recursion",
+    "js",
+    "javascript",
+    "graph",
+    "tree",
+    "walk",
+    "walker",
+    "iterator",
+    "json",
+    "deep"
+  ]
 }

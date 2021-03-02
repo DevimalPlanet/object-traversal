@@ -14,6 +14,7 @@ module.exports = {
     eqeqeq: ['error', 'always'],
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-var-requires': 'off',
     'no-shadow': [
       'error',
       { builtinGlobals: false, hoist: 'functions', allow: [] },

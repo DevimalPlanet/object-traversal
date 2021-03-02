@@ -16,6 +16,7 @@ for (const key in mocks) {
   const benchResults = [];
   let counter = 0;
   const callback = () => {
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     counter++;
   };
 

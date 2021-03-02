@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 const { traverse } = require('object-traversal');
 
 const network = {

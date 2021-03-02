@@ -13,7 +13,7 @@
     "test:cov": "tsdx test --coverage",
     "test:clear": "tsdx test --clearCache",
     "benchmark": "tsdx build && node benchmarks/object-traversal.bench.js",
-    "lint": "tsdx lint",
+    "lint": "tsdx lint src test benchmarks examples/src",
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why"

@@ -12,7 +12,7 @@
     "test:watch": "tsdx test --watch",
     "test:cov": "tsdx test --coverage",
     "test:clear": "tsdx test --clearCache",
-    "benchmark": "tsdx build && node benchmarks/object-traversal.bench.js",
+    "benchmark": "tsdx build && node benchmarks/object-traversal.bench.js && node benchmarks/stack.bench.js",
     "lint": "tsdx lint src test benchmarks examples/src",
     "prepare": "tsdx build",
     "size": "size-limit",
@@ -56,6 +56,7 @@
   "devDependencies": {
     "@size-limit/preset-small-lib": "^4.9.2",
     "@types/benchmark": "^2.1.0",
+    "@types/traverse": "^0.6.32",
     "benchmark": "^2.1.4",
     "husky": "^5.1.0",
     "size-limit": "^4.9.2",

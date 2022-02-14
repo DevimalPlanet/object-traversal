@@ -1,22 +1,18 @@
 import { TraversalCallback, TraversalCallbackContext, traverse } from '../src';
+// import { createBenchMock } from '../benchmarks/helper';
+const { createBenchMock } = require('../benchmarks/helper');
+import traverseJs from 'traverse';
 
-describe('traverse', () => {
+describe(`object-traversal`, () => {
   it('exists', () => {
     expect(traverse).toBeTruthy();
   });
 
   it('throws when first parameter is not an object', () => {
     const mockFn = jest.fn();
-    expect(() => traverse(1 as any, mockFn)).toThrow();
-
-    let error;
-    try {
-      traverse(1 as any, mockFn);
-    } catch (e) {
-      error = e;
-    }
-
-    expect(error?.message).toEqual('First argument must be an object');
+    expect(() => traverse(1 as any, mockFn)).toThrowError(
+      'First argument must be an object'
+    );
   });
 
   it('processes the root object correctly', () => {
@@ -83,7 +79,7 @@ describe('traverse', () => {
 
     traverse(mock1, mockFn);
 
-    expect(mockFn).toBeCalledTimes(5);
+    expect(mockFn).toBeCalledTimes(4);
   });
 
   it('practical example: get full names', () => {
@@ -199,5 +195,49 @@ describe('traverse', () => {
 
     expect(mockData.children[1].age).toEqual(3);
     expect(mockData.children[0].age).toEqual(1);
+  });
+
+  describe('object-traversal and traverse packages ', () => {
+    const dimensions = 10;
+    const bench10x10WithCycles = createBenchMock(dimensions, dimensions, true);
+    const bench10x10WithoutCycles = createBenchMock(
+      dimensions,
+      dimensions,
+      false
+    );
+
+    it('object-traversal skips duplicate nodes (unlike traverse)', () => {
+      let counter = 0;
+      let counter2 = 0;
+      const callback = () => {
+        counter++;
+      };
+
+      const callback2 = () => {
+        counter2++;
+      };
+
+      traverse(bench10x10WithCycles, callback);
+      traverseJs(bench10x10WithCycles).forEach(callback2);
+
+      expect(counter).toEqual(counter2 - dimensions);
+    });
+
+    it('traverse the same amount of non-cyclic nodes', () => {
+      let counter = 0;
+      let counter2 = 0;
+      const callback = () => {
+        counter++;
+      };
+
+      const callback2 = () => {
+        counter2++;
+      };
+
+      traverse(bench10x10WithoutCycles, callback);
+      traverseJs(bench10x10WithoutCycles).forEach(callback2);
+
+      expect(counter).toEqual(counter2);
+    });
   });
 });

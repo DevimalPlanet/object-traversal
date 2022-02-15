@@ -22,6 +22,8 @@ export type TraversalOpts = {
   traversalType?: TraversalType;
   maxNodeCount?: number;
   cycleHandling?: boolean;
+  /** The maximum depth that must be traversed (inclusive). Root object has depth 0. */
+  maxDepth?: number;
 };
 
 export type TraversalType = 'depth-first' | 'breadth-first';

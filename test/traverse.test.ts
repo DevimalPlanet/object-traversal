@@ -8,11 +8,15 @@ import {
 const { createBenchMock } = require('../benchmarks/helper');
 import traverseJs from 'traverse';
 
-const dimensions = 10;
+const mockDimensions = 10;
 /** the total amount of nodes that exist in mock objects */
-const nodeCount = dimensions * dimensions + dimensions + 1;
-const mockWithCycles = createBenchMock(dimensions, dimensions, true);
-const mockWithoutCycles = createBenchMock(dimensions, dimensions, false);
+const nodeCount = mockDimensions * mockDimensions + mockDimensions + 1;
+const mockWithCycles = createBenchMock(mockDimensions, mockDimensions, true);
+const mockWithoutCycles = createBenchMock(
+  mockDimensions,
+  mockDimensions,
+  false
+);
 
 const traversalTypes: TraversalType[] = ['depth-first', 'breadth-first'];
 for (let traversalType of traversalTypes) {
@@ -234,7 +238,7 @@ for (let traversalType of traversalTypes) {
 
         traverse(mockWithoutCycles, callback, {
           traversalType,
-          maxNodeCount: maxNodeCount,
+          maxNodeCount,
         });
         expect(counter).toEqual(nodeCount);
       });
@@ -248,7 +252,7 @@ for (let traversalType of traversalTypes) {
 
         traverse(mockWithoutCycles, callback, {
           traversalType,
-          maxNodeCount: maxNodeCount,
+          maxNodeCount,
         });
         expect(counter).toEqual(maxNodeCount);
       });
@@ -262,10 +266,48 @@ for (let traversalType of traversalTypes) {
 
         traverse(mockWithCycles, callback, {
           traversalType,
-          maxNodeCount: maxNodeCount,
+          maxNodeCount,
           cycleHandling: false,
         });
         expect(counter).toEqual(maxNodeCount);
+      });
+
+      it('works with omitted maxDepth', () => {
+        const depths = new Set<number>();
+        const callback = (tm: TraversalCallbackContext) => {
+          depths.add(tm.meta.depth);
+        };
+
+        traverse(mockWithCycles, callback, {
+          traversalType,
+        });
+
+        const depthArray = Array.from(depths.values()).sort((a, b) => a - b);
+        const expected = [];
+        for (let i = 0; i < mockDimensions + 1; i++) {
+          expected.push(i);
+        }
+        expect(depthArray).toEqual(expected);
+      });
+
+      it('works with specified maxDepth', () => {
+        const maxDepth = 5;
+        const depths = new Set();
+        const callback = (tm: TraversalCallbackContext) => {
+          depths.add(tm.meta.depth);
+        };
+
+        traverse(mockWithCycles, callback, {
+          traversalType,
+          maxDepth,
+        });
+
+        const depthArray = Array.from(depths.values()).sort();
+        const expected = [];
+        for (let i = 0; i < maxDepth + 1; i++) {
+          expected.push(i);
+        }
+        expect(depthArray).toEqual(expected);
       });
     });
 
@@ -284,7 +326,7 @@ for (let traversalType of traversalTypes) {
         traverse(mockWithCycles, callback, { traversalType });
         traverseJs(mockWithCycles).forEach(callback2);
 
-        expect(counter).toEqual(counter2 - dimensions);
+        expect(counter).toEqual(counter2 - mockDimensions);
       });
 
       it('both packages traverse the same amount nodes when no cycles exist', () => {

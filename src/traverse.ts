@@ -10,6 +10,7 @@ const DEFAULT_TRAVERSAL_OPTS: Required<TraversalOpts> = {
   traversalType: 'depth-first',
   maxNodeCount: Number.MAX_SAFE_INTEGER,
   cycleHandling: true,
+  maxDepth: Number.MAX_SAFE_INTEGER,
 };
 
 /** Applies a given callback function to all properties of an object and its children */
@@ -57,7 +58,7 @@ const _traverse = (
       ? new _Stack()
       : new _QueueToStackAdapter(new _Queue());
 
-  const { maxNodeCount, cycleHandling } = opts;
+  const { maxNodeCount, cycleHandling, maxDepth } = opts;
   const allowCycles = !cycleHandling;
   let visitedNodeCount = 0;
   while (!stackOrQueue.isEmpty() && maxNodeCount > visitedNodeCount) {
@@ -73,10 +74,14 @@ const _traverse = (
     }
 
     if (valueIsObject) {
+      visitedNodes.add(value); // only add if valueIsObject
       const { depth, currentPath } = meta;
-      visitedNodes.add(value);
-      newNodesToVisit.reset();
+      const newDepth = depth + 1;
+      if (newDepth > maxDepth) {
+        continue;
+      }
 
+      newNodesToVisit.reset();
       const keys = Object.keys(value);
       for (let i = 0; i < keys.length; i++) {
         const property = keys[i];
@@ -85,7 +90,7 @@ const _traverse = (
           meta: {
             currentPath: !currentPath ? property : `${currentPath}.${property}`,
             visitedNodes: visitedNodes,
-            depth: depth + 1,
+            depth: newDepth,
           },
           key: property,
           parent: value,

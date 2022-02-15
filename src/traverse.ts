@@ -8,6 +8,8 @@ import {
 
 const DEFAULT_TRAVERSAL_OPTS: Required<TraversalOpts> = {
   traversalType: 'depth-first',
+  maxNodeCount: Number.MAX_SAFE_INTEGER,
+  cycleHandling: true,
 };
 
 /** Applies a given callback function to all properties of an object and its children */
@@ -37,13 +39,13 @@ export const traverse = (
     },
   });
 
-  _traverse(callback, stackOrQueue, opts);
+  _traverse(callback, stackOrQueue, opts as Required<TraversalOpts>);
 };
 
 const _traverse = (
   callback: TraversalCallback,
   stackOrQueue: _Stack<TraversalCallbackContext>,
-  opts: TraversalOpts
+  opts: Required<TraversalOpts>
 ) => {
   /**
    * Using a stack instead of a queue to preserve the natural depth-first traversal order. Using a queue or traversing an array
@@ -54,13 +56,18 @@ const _traverse = (
     opts.traversalType === 'depth-first'
       ? new _Stack()
       : new _QueueToStackAdapter(new _Queue());
-  while (!stackOrQueue.isEmpty()) {
+
+  const { maxNodeCount, cycleHandling } = opts;
+  const allowCycles = !cycleHandling;
+  let visitedNodeCount = 0;
+  while (!stackOrQueue.isEmpty() && maxNodeCount > visitedNodeCount) {
     const callbackContext = stackOrQueue.pop()!;
     const { value, meta } = callbackContext;
     const { visitedNodes } = meta;
     const valueIsObject = value instanceof Object;
-    if (!valueIsObject || !visitedNodes.has(value)) {
+    if (!valueIsObject || allowCycles || !visitedNodes.has(value)) {
       callback(callbackContext);
+      visitedNodeCount++;
     } else {
       continue;
     }

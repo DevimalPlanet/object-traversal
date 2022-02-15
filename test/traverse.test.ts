@@ -8,216 +8,268 @@ import {
 const { createBenchMock } = require('../benchmarks/helper');
 import traverseJs from 'traverse';
 
-const traversalTypes: TraversalType[] = ['depth-first', 'breadth-first'];
+const dimensions = 10;
+/** the total amount of nodes that exist in mock objects */
+const nodeCount = dimensions * dimensions + dimensions + 1;
+const mockWithCycles = createBenchMock(dimensions, dimensions, true);
+const mockWithoutCycles = createBenchMock(dimensions, dimensions, false);
 
+const traversalTypes: TraversalType[] = ['depth-first', 'breadth-first'];
 for (let traversalType of traversalTypes) {
   describe(`object-traversal (${traversalType})`, () => {
-    it('exists', () => {
-      expect(traverse).toBeTruthy();
-    });
+    describe('base functionality', () => {
+      it('exists', () => {
+        expect(traverse).toBeTruthy();
+      });
 
-    it('throws when first parameter is not an object', () => {
-      const mockFn = jest.fn();
-      expect(() => traverse(1 as any, mockFn)).toThrowError(
-        'First argument must be an object'
-      );
-    });
+      it('throws when first parameter is not an object', () => {
+        const mockFn = jest.fn();
+        expect(() => traverse(1 as any, mockFn)).toThrowError(
+          'First argument must be an object'
+        );
+      });
 
-    it('processes the root object correctly', () => {
-      const allContexts: TraversalCallbackContext[] = [];
-      const mockFn = jest.fn(context => allContexts.push(context));
-      const mockData = {};
+      it('processes the root object correctly', () => {
+        const allContexts: TraversalCallbackContext[] = [];
+        const mockFn = jest.fn(context => allContexts.push(context));
+        const mockData = {};
 
-      traverse(mockData, mockFn, { traversalType });
+        traverse(mockData, mockFn, { traversalType });
 
-      expect(mockFn).toBeCalledTimes(1);
-      expect(allContexts[0].parent).toBeNull();
-      expect(allContexts[0].value).toEqual(mockData);
-      expect(allContexts[0].key).toEqual(null);
-      expect(allContexts[0].meta.currentPath).toEqual(null);
-      expect(allContexts[0].meta.depth).toEqual(0);
-    });
+        expect(mockFn).toBeCalledTimes(1);
+        expect(allContexts[0].parent).toBeNull();
+        expect(allContexts[0].value).toEqual(mockData);
+        expect(allContexts[0].key).toEqual(null);
+        expect(allContexts[0].meta.currentPath).toEqual(null);
+        expect(allContexts[0].meta.depth).toEqual(0);
+      });
 
-    it('passes parent, key, value, meta as arguments to processing callback', () => {
-      const allContexts: TraversalCallbackContext[] = [];
-      const mockFn = jest.fn((context: TraversalCallbackContext) =>
-        allContexts.push(context)
-      );
-      const mockData = { lastSegment: 2 };
+      it('passes parent, key, value, meta as arguments to processing callback', () => {
+        const allContexts: TraversalCallbackContext[] = [];
+        const mockFn = jest.fn((context: TraversalCallbackContext) =>
+          allContexts.push(context)
+        );
+        const mockData = { lastSegment: 2 };
 
-      traverse(mockData, mockFn, { traversalType });
-      const { parent, key, value, meta } = allContexts[1];
+        traverse(mockData, mockFn, { traversalType });
+        const { parent, key, value, meta } = allContexts[1];
 
-      expect(allContexts.length).toBe(2);
-      expect(mockFn).toBeCalled();
-      expect(parent).toEqual(mockData);
-      expect(key).toEqual('lastSegment');
-      expect(value).toEqual(2);
-      expect(typeof meta).toEqual('object');
-    });
+        expect(allContexts.length).toBe(2);
+        expect(mockFn).toBeCalled();
+        expect(parent).toEqual(mockData);
+        expect(key).toEqual('lastSegment');
+        expect(value).toEqual(2);
+        expect(typeof meta).toEqual('object');
+      });
 
-    it('passes deep nested paths into meta', () => {
-      const allContexts: TraversalCallbackContext[] = [];
-      const mockFn = jest.fn((context: TraversalCallbackContext) =>
-        allContexts.push(context)
-      );
-      const mockData = { somePath: { nestedPath: 3 } };
+      it('passes deep nested paths into meta', () => {
+        const allContexts: TraversalCallbackContext[] = [];
+        const mockFn = jest.fn((context: TraversalCallbackContext) =>
+          allContexts.push(context)
+        );
+        const mockData = { somePath: { nestedPath: 3 } };
 
-      traverse(mockData, mockFn, { traversalType });
-      const { parent, value, meta } = allContexts[2];
+        traverse(mockData, mockFn, { traversalType });
+        const { parent, value, meta } = allContexts[2];
 
-      expect(allContexts.length).toBe(3);
-      expect(mockFn).toBeCalled();
-      expect(parent).toEqual({ nestedPath: 3 });
-      expect(meta.currentPath).toEqual('somePath.nestedPath');
-      expect(value).toEqual(3);
-      expect(typeof meta).toEqual('object');
-    });
+        expect(allContexts.length).toBe(3);
+        expect(mockFn).toBeCalled();
+        expect(parent).toEqual({ nestedPath: 3 });
+        expect(meta.currentPath).toEqual('somePath.nestedPath');
+        expect(value).toEqual(3);
+        expect(typeof meta).toEqual('object');
+      });
 
-    it('properly handles cycles', () => {
-      const mock1 = { a: 1, b: null as any };
-      const mock2 = { b: 1, a: null as any };
-      mock1.b = mock2;
-      mock2.a = mock1;
+      it('properly handles cycles', () => {
+        const mock1 = { a: 1, b: null as any };
+        const mock2 = { b: 1, a: null as any };
+        mock1.b = mock2;
+        mock2.a = mock1;
 
-      const allContexts: TraversalCallbackContext[] = [];
-      const mockFn = jest.fn((context: TraversalCallbackContext) =>
-        allContexts.push(context)
-      );
+        const allContexts: TraversalCallbackContext[] = [];
+        const mockFn = jest.fn((context: TraversalCallbackContext) =>
+          allContexts.push(context)
+        );
 
-      traverse(mock1, mockFn, { traversalType });
+        traverse(mock1, mockFn, { traversalType });
 
-      expect(mockFn).toBeCalledTimes(4);
-    });
+        expect(mockFn).toBeCalledTimes(4);
+      });
 
-    it('practical example: get full names', () => {
-      interface Person {
-        firstName: string;
-        lastName: string;
-        age: number;
-        children: Person[];
-      }
-
-      const mockData: Person = {
-        firstName: 'firstName',
-        lastName: 'lastName',
-        age: 0,
-        children: [
-          {
-            firstName: 'firstName1',
-            lastName: 'lastName1',
-            age: 1,
-            children: [],
-          },
-          {
-            firstName: 'firstName2',
-            lastName: 'lastName2',
-            age: 2,
-            children: [],
-          },
-        ],
-      };
-
-      const allFullNames: string[] = [];
-      const callback: TraversalCallback = context => {
-        const { value } = context;
-        if (typeof value === 'object' && value.firstName) {
-          allFullNames.push(`${value.firstName} ${value.lastName}`);
+      it('practical example: get full names', () => {
+        interface Person {
+          firstName: string;
+          lastName: string;
+          age: number;
+          children: Person[];
         }
-      };
 
-      traverse(mockData, callback, { traversalType });
-      allFullNames.sort();
+        const mockData: Person = {
+          firstName: 'firstName',
+          lastName: 'lastName',
+          age: 0,
+          children: [
+            {
+              firstName: 'firstName1',
+              lastName: 'lastName1',
+              age: 1,
+              children: [],
+            },
+            {
+              firstName: 'firstName2',
+              lastName: 'lastName2',
+              age: 2,
+              children: [],
+            },
+          ],
+        };
 
-      expect(allFullNames).toEqual([
-        'firstName lastName',
-        'firstName1 lastName1',
-        'firstName2 lastName2',
-      ]);
+        const allFullNames: string[] = [];
+        const callback: TraversalCallback = context => {
+          const { value } = context;
+          if (typeof value === 'object' && value.firstName) {
+            allFullNames.push(`${value.firstName} ${value.lastName}`);
+          }
+        };
+
+        traverse(mockData, callback, { traversalType });
+        allFullNames.sort();
+
+        expect(allFullNames).toEqual([
+          'firstName lastName',
+          'firstName1 lastName1',
+          'firstName2 lastName2',
+        ]);
+      });
+
+      it('practical example: find full paths matching age 2', () => {
+        const mockData = {
+          firstName: 'firstName',
+          lastName: 'lastName',
+          age: 0,
+          children: [
+            {
+              firstName: 'firstName1',
+              lastName: 'lastName1',
+              age: 1,
+              children: [],
+            },
+            {
+              firstName: 'firstName2',
+              lastName: 'lastName2',
+              age: 2,
+              children: [],
+            },
+          ],
+        };
+
+        const fullPaths: string[] = [];
+        const callback: TraversalCallback = context => {
+          const { key, value, meta } = context;
+          if (key === 'age' && value === 2) {
+            fullPaths.push(meta.currentPath!);
+          }
+        };
+
+        traverse(mockData, callback, { traversalType });
+
+        expect(fullPaths.length).toEqual(1);
+        expect(fullPaths[0]).toEqual('children.1.age');
+      });
+
+      it('practical example: replace a value when condition matches', () => {
+        const mockData = {
+          firstName: 'firstName',
+          lastName: 'lastName',
+          age: 0,
+          children: [
+            {
+              firstName: 'firstName1',
+              lastName: 'lastName1',
+              age: 1,
+              children: [],
+            },
+            {
+              firstName: 'firstName2',
+              lastName: 'lastName2',
+              age: 2,
+              children: [],
+            },
+          ],
+        };
+
+        const callback: TraversalCallback = context => {
+          const { parent, key, meta } = context;
+          if (/children\.1\.age/.test(meta.currentPath!)) {
+            parent![key!] = 3;
+          }
+        };
+
+        traverse(mockData, callback, { traversalType });
+
+        expect(mockData.children[1].age).toEqual(3);
+        expect(mockData.children[0].age).toEqual(1);
+      });
     });
 
-    it('practical example: find full paths matching age 2', () => {
-      const mockData = {
-        firstName: 'firstName',
-        lastName: 'lastName',
-        age: 0,
-        children: [
-          {
-            firstName: 'firstName1',
-            lastName: 'lastName1',
-            age: 1,
-            children: [],
-          },
-          {
-            firstName: 'firstName2',
-            lastName: 'lastName2',
-            age: 2,
-            children: [],
-          },
-        ],
-      };
+    describe('utility configuration options', () => {
+      it('traverses the entire object when maxNodeCount omitted', () => {
+        let counter = 0;
+        const callback = () => {
+          counter++;
+        };
 
-      const fullPaths: string[] = [];
-      const callback: TraversalCallback = context => {
-        const { key, value, meta } = context;
-        if (key === 'age' && value === 2) {
-          fullPaths.push(meta.currentPath!);
-        }
-      };
+        traverse(mockWithoutCycles, callback, {
+          traversalType,
+        });
+        expect(counter).toEqual(nodeCount);
+      });
 
-      traverse(mockData, callback, { traversalType });
+      it('traverses the entire object when maxNodeCount is bigger than nodeCount', () => {
+        const maxNodeCount = nodeCount + 1;
+        let counter = 0;
+        const callback = () => {
+          counter++;
+        };
 
-      expect(fullPaths.length).toEqual(1);
-      expect(fullPaths[0]).toEqual('children.1.age');
+        traverse(mockWithoutCycles, callback, {
+          traversalType,
+          maxNodeCount: maxNodeCount,
+        });
+        expect(counter).toEqual(nodeCount);
+      });
+
+      it('halts when maxNodeCount is reached in non-cyclic objects', () => {
+        const maxNodeCount = 3;
+        let counter = 0;
+        const callback = () => {
+          counter++;
+        };
+
+        traverse(mockWithoutCycles, callback, {
+          traversalType,
+          maxNodeCount: maxNodeCount,
+        });
+        expect(counter).toEqual(maxNodeCount);
+      });
+
+      it('halts when maxNodeCount is reached in cyclic objects with cycleHandling is false', () => {
+        const maxNodeCount = nodeCount + 1; // + 1 tests that it continue traversing infinite loop, if it weren't for maxNodeCount option
+        let counter = 0;
+        const callback = () => {
+          counter++;
+        };
+
+        traverse(mockWithCycles, callback, {
+          traversalType,
+          maxNodeCount: maxNodeCount,
+          cycleHandling: false,
+        });
+        expect(counter).toEqual(maxNodeCount);
+      });
     });
 
-    it('practical example: replace a value when condition matches', () => {
-      const mockData = {
-        firstName: 'firstName',
-        lastName: 'lastName',
-        age: 0,
-        children: [
-          {
-            firstName: 'firstName1',
-            lastName: 'lastName1',
-            age: 1,
-            children: [],
-          },
-          {
-            firstName: 'firstName2',
-            lastName: 'lastName2',
-            age: 2,
-            children: [],
-          },
-        ],
-      };
-
-      const callback: TraversalCallback = context => {
-        const { parent, key, meta } = context;
-        if (/children\.1\.age/.test(meta.currentPath!)) {
-          parent![key!] = 3;
-        }
-      };
-
-      traverse(mockData, callback, { traversalType });
-
-      expect(mockData.children[1].age).toEqual(3);
-      expect(mockData.children[0].age).toEqual(1);
-    });
-
-    describe('object-traversal and traverse packages ', () => {
-      const dimensions = 10;
-      const bench10x10WithCycles = createBenchMock(
-        dimensions,
-        dimensions,
-        true
-      );
-      const bench10x10WithoutCycles = createBenchMock(
-        dimensions,
-        dimensions,
-        false
-      );
-
+    describe('object-traversal compared with traverse package', () => {
       it('object-traversal skips duplicate nodes (unlike traverse)', () => {
         let counter = 0;
         let counter2 = 0;
@@ -229,13 +281,13 @@ for (let traversalType of traversalTypes) {
           counter2++;
         };
 
-        traverse(bench10x10WithCycles, callback, { traversalType });
-        traverseJs(bench10x10WithCycles).forEach(callback2);
+        traverse(mockWithCycles, callback, { traversalType });
+        traverseJs(mockWithCycles).forEach(callback2);
 
         expect(counter).toEqual(counter2 - dimensions);
       });
 
-      it('traverse the same amount of non-cyclic nodes', () => {
+      it('both packages traverse the same amount nodes when no cycles exist', () => {
         let counter = 0;
         let counter2 = 0;
         const callback = () => {
@@ -246,8 +298,8 @@ for (let traversalType of traversalTypes) {
           counter2++;
         };
 
-        traverse(bench10x10WithoutCycles, callback, { traversalType });
-        traverseJs(bench10x10WithoutCycles).forEach(callback2);
+        traverse(mockWithoutCycles, callback, { traversalType });
+        traverseJs(mockWithoutCycles).forEach(callback2);
 
         expect(counter).toEqual(counter2);
       });

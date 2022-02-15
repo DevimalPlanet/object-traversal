@@ -20,6 +20,8 @@ export type TraversalCallback = (context: TraversalCallbackContext) => void;
 
 export type TraversalOpts = {
   traversalType?: TraversalType;
+  maxNodeCount?: number;
+  cycleHandling?: boolean;
 };
 
 export type TraversalType = 'depth-first' | 'breadth-first';

@@ -12,7 +12,7 @@
     "test:watch": "tsdx test --watch",
     "test:cov": "tsdx test --coverage",
     "test:clear": "tsdx test --clearCache",
-    "benchmark": "tsdx build && node benchmarks/object-traversal.bench.js && node benchmarks/stack.bench.js",
+    "benchmark": "tsdx build && node benchmarks/object-traversal.bench.js && node benchmarks/stack-queue.bench.js",
     "lint": "tsdx lint src test benchmarks examples/src",
     "prepare": "tsdx build",
     "size": "size-limit",

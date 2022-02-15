@@ -17,3 +17,9 @@ export type TraversalCallbackContext = {
 };
 
 export type TraversalCallback = (context: TraversalCallbackContext) => void;
+
+export type TraversalOpts = {
+  traversalType?: TraversalType;
+};
+
+export type TraversalType = 'depth-first' | 'breadth-first';

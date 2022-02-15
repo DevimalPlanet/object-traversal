@@ -1,3 +1,4 @@
+import { TraversalOpts, _Queue, _QueueToStackAdapter } from '.';
 import { _Stack } from './stack';
 import {
   ArbitraryObject,
@@ -5,17 +6,27 @@ import {
   TraversalCallbackContext,
 } from './types';
 
+const DEFAULT_TRAVERSAL_OPTS: Required<TraversalOpts> = {
+  traversalType: 'depth-first',
+};
+
 /** Applies a given callback function to all properties of an object and its children */
 export const traverse = (
   root: ArbitraryObject,
-  callback: TraversalCallback
+  callback: TraversalCallback,
+  opts?: TraversalOpts
 ): void => {
   if (!(root instanceof Object)) {
     throw new Error('First argument must be an object');
   }
 
-  let stack: _Stack<TraversalCallbackContext> = new _Stack();
-  stack.push({
+  opts = Object.assign({}, DEFAULT_TRAVERSAL_OPTS, opts);
+
+  let stackOrQueue: _Stack<TraversalCallbackContext> =
+    opts.traversalType === 'depth-first'
+      ? new _Stack()
+      : new _QueueToStackAdapter(new _Queue());
+  stackOrQueue.push({
     parent: null,
     key: null,
     value: root,
@@ -26,33 +37,42 @@ export const traverse = (
     },
   });
 
-  _traverse(callback, stack);
+  _traverse(callback, stackOrQueue, opts);
 };
 
 const _traverse = (
   callback: TraversalCallback,
-  stack: _Stack<TraversalCallbackContext>
+  stackOrQueue: _Stack<TraversalCallbackContext>,
+  opts: TraversalOpts
 ) => {
   /**
-   * Using a stack instead of a queue to preserve the natural depth-first traversal order.
-   * Using a queue or traversing an array in order would lead the depth-first to traverse the value.properties in reverse order.
+   * Using a stack instead of a queue to preserve the natural depth-first traversal order. Using a queue or traversing an array
+   *   in order would lead the depth-first to traverse the value.properties in reverse order.
+   * Breadth-first traversal uses queues as usual.
    */
-  let newNodesToVisit: _Stack<TraversalCallbackContext> = new _Stack();
-  while (!stack.isEmpty()) {
-    const { value, meta, parent, key } = stack.pop()!;
-    const { depth, currentPath, visitedNodes } = meta;
+  let newNodesToVisit: _Stack<TraversalCallbackContext> =
+    opts.traversalType === 'depth-first'
+      ? new _Stack()
+      : new _QueueToStackAdapter(new _Queue());
+  while (!stackOrQueue.isEmpty()) {
+    const callbackContext = stackOrQueue.pop()!;
+    const { value, meta } = callbackContext;
+    const { visitedNodes } = meta;
     const valueIsObject = value instanceof Object;
     if (!valueIsObject || !visitedNodes.has(value)) {
-      callback({ value, meta, parent, key });
+      callback(callbackContext);
     } else {
       continue;
     }
 
     if (valueIsObject) {
-      meta.visitedNodes.add(value);
+      const { depth, currentPath } = meta;
+      visitedNodes.add(value);
       newNodesToVisit.reset();
 
-      for (const property in value) {
+      const keys = Object.keys(value);
+      for (let i = 0; i < keys.length; i++) {
+        const property = keys[i];
         newNodesToVisit.push({
           value: value[property],
           meta: {
@@ -66,7 +86,7 @@ const _traverse = (
       }
 
       while (!newNodesToVisit.isEmpty()) {
-        stack.push(newNodesToVisit.pop());
+        stackOrQueue.push(newNodesToVisit.pop());
       }
     }
   }

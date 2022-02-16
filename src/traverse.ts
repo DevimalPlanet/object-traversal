@@ -26,10 +26,13 @@ export const traverse = (
 
   opts = Object.assign({}, DEFAULT_TRAVERSAL_OPTS, opts);
 
-  let stackOrQueue: _Stack<TraversalCallbackContext> =
-    opts.traversalType === 'depth-first'
-      ? new _Stack()
-      : new _QueueToStackAdapter(new _Queue());
+  let stackOrQueue: _Stack<TraversalCallbackContext>;
+  if (opts.traversalType === 'depth-first') {
+    stackOrQueue = new _Stack();
+  } else {
+    stackOrQueue = new _QueueToStackAdapter(new _Queue());
+  }
+
   stackOrQueue.push({
     parent: null,
     key: null,
@@ -54,10 +57,12 @@ const _traverse = (
    *   in order would lead the depth-first to traverse the value.properties in reverse order.
    * Breadth-first traversal uses queues as usual.
    */
-  let newNodesToVisit: _Stack<TraversalCallbackContext> =
-    opts.traversalType === 'depth-first'
-      ? new _Stack()
-      : new _QueueToStackAdapter(new _Queue());
+  let newNodesToVisit: _Stack<TraversalCallbackContext>;
+  if (opts.traversalType === 'depth-first') {
+    newNodesToVisit = new _Stack();
+  } else {
+    newNodesToVisit = new _QueueToStackAdapter(new _Queue());
+  }
 
   const { maxNodeCount, cycleHandling, maxDepth, haltOnTruthy } = opts;
   const allowCycles = !cycleHandling;
@@ -88,10 +93,18 @@ const _traverse = (
       const keys = Object.keys(value);
       for (let i = 0; i < keys.length; i++) {
         const property = keys[i];
+
+        let newPath: string;
+        if (!currentPath) {
+          newPath = property;
+        } else {
+          newPath = `${currentPath}.${property}`;
+        }
+
         newNodesToVisit.push({
           value: value[property],
           meta: {
-            currentPath: !currentPath ? property : `${currentPath}.${property}`,
+            currentPath: newPath,
             visitedNodes: visitedNodes,
             depth: newDepth,
           },

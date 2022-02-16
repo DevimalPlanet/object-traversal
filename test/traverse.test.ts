@@ -309,6 +309,43 @@ for (let traversalType of traversalTypes) {
         }
         expect(depthArray).toEqual(expected);
       });
+
+      it('halts if haltOnTruthy flag is set and function returns truthy value', () => {
+        const targetCount = 2;
+        let counter = 0;
+        const callback = () => {
+          counter++;
+          if (counter === targetCount) {
+            return counter;
+          }
+          return null;
+        };
+
+        traverse(mockWithCycles, callback, {
+          traversalType,
+          haltOnTruthy: true,
+        });
+
+        expect(counter).toEqual(targetCount);
+      });
+
+      it('does NOT halt if haltOnTruthy flag is NOT set and function returns truthy value', () => {
+        const targetCount = 2;
+        let counter = 0;
+        const callback = () => {
+          counter++;
+          if (counter === targetCount) {
+            return counter;
+          }
+          return null;
+        };
+
+        traverse(mockWithCycles, callback, {
+          traversalType,
+        });
+
+        expect(counter).toEqual(nodeCount);
+      });
     });
 
     describe('object-traversal compared with traverse package', () => {

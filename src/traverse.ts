@@ -11,6 +11,7 @@ const DEFAULT_TRAVERSAL_OPTS: Required<TraversalOpts> = {
   maxNodeCount: Number.MAX_SAFE_INTEGER,
   cycleHandling: true,
   maxDepth: Number.MAX_SAFE_INTEGER,
+  haltOnTruthy: false,
 };
 
 /** Applies a given callback function to all properties of an object and its children */
@@ -58,7 +59,7 @@ const _traverse = (
       ? new _Stack()
       : new _QueueToStackAdapter(new _Queue());
 
-  const { maxNodeCount, cycleHandling, maxDepth } = opts;
+  const { maxNodeCount, cycleHandling, maxDepth, haltOnTruthy } = opts;
   const allowCycles = !cycleHandling;
   let visitedNodeCount = 0;
   while (!stackOrQueue.isEmpty() && maxNodeCount > visitedNodeCount) {
@@ -67,7 +68,9 @@ const _traverse = (
     const { visitedNodes } = meta;
     const valueIsObject = value instanceof Object;
     if (!valueIsObject || allowCycles || !visitedNodes.has(value)) {
-      callback(callbackContext);
+      if (callback(callbackContext) && haltOnTruthy) {
+        break;
+      }
       visitedNodeCount++;
     } else {
       continue;

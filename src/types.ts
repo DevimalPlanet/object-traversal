@@ -16,7 +16,7 @@ export type TraversalCallbackContext = {
   meta: TraversalMeta;
 };
 
-export type TraversalCallback = (context: TraversalCallbackContext) => void;
+export type TraversalCallback = (context: TraversalCallbackContext) => any;
 
 export type TraversalOpts = {
   traversalType?: TraversalType;
@@ -24,6 +24,8 @@ export type TraversalOpts = {
   cycleHandling?: boolean;
   /** The maximum depth that must be traversed (inclusive). Root object has depth 0. */
   maxDepth?: number;
+  /** Stop the traversal as soon as the callback function returns a truthy value. Default: false */
+  haltOnTruthy?: boolean;
 };
 
 export type TraversalType = 'depth-first' | 'breadth-first';

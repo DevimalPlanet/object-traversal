@@ -1,6 +1,6 @@
 # object-traversal
 
-Simple, performant and customizable utility for traversing and applying callback functions to any portion of a javascript object.
+Simple, performant and configurable utility for traversing and applying callback functions to any portion of a javascript object.
 
 ## Installation
 
@@ -137,13 +137,13 @@ Up to 15x faster than popular alternatives. `npm run benchmark`:
 ## Planned
 
 - [ ] Docs
-- [ ] Configurable BFS/DFS
+- [x] Configurable BFS/DFS
 - [ ] Iterator support
-- [ ] Max depth
+- [x] Max depth
 - [ ] Timeouts
 - [ ] Configurable path separator
 - [ ] Utility for consuming paths
-- [ ] Allow user to turn off cycle handler
+- [x] Allow user to turn off cycle handler
 
 ## Built with
 

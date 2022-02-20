@@ -1,4 +1,5 @@
-import { TraversalMeta, TraversalOpts, _Queue, _QueueToStackAdapter } from '.';
+import { _Queue, _QueueToStackAdapter } from './queue';
+import { TraversalMeta, TraversalOpts } from './types';
 import { DEFAULT_TRAVERSAL_OPTS } from './constants';
 import { _Stack } from './stack';
 import {

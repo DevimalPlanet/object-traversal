@@ -44,7 +44,7 @@ for (let traversalType of traversalTypes) {
         expect(allContexts[0].parent).toBeNull();
         expect(allContexts[0].value).toEqual(mockData);
         expect(allContexts[0].key).toEqual(null);
-        expect(allContexts[0].meta.currentPath).toEqual(null);
+        expect(allContexts[0].meta.nodePath).toEqual(null);
         expect(allContexts[0].meta.depth).toEqual(0);
       });
 
@@ -79,7 +79,7 @@ for (let traversalType of traversalTypes) {
         expect(allContexts.length).toBe(3);
         expect(mockFn).toBeCalled();
         expect(parent).toEqual({ nestedPath: 3 });
-        expect(meta.currentPath).toEqual('somePath.nestedPath');
+        expect(meta.nodePath).toEqual('somePath.nestedPath');
         expect(value).toEqual(3);
         expect(typeof meta).toEqual('object');
       });
@@ -171,7 +171,7 @@ for (let traversalType of traversalTypes) {
         const callback: TraversalCallback = context => {
           const { key, value, meta } = context;
           if (key === 'age' && value === 2) {
-            fullPaths.push(meta.currentPath!);
+            fullPaths.push(meta.nodePath!);
           }
         };
 
@@ -204,7 +204,7 @@ for (let traversalType of traversalTypes) {
 
         const callback: TraversalCallback = context => {
           const { parent, key, meta } = context;
-          if (/children\.1\.age/.test(meta.currentPath!)) {
+          if (/children\.1\.age/.test(meta.nodePath!)) {
             parent![key!] = 3;
           }
         };
@@ -350,7 +350,7 @@ for (let traversalType of traversalTypes) {
       it('path separator can be configured', () => {
         const paths: any[] = [];
         const callback = (tm: TraversalCallbackContext) => {
-          paths.push(tm.meta.currentPath);
+          paths.push(tm.meta.nodePath);
         };
 
         traverse({ a: { b: 1 } }, callback, {

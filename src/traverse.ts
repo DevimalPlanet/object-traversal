@@ -27,15 +27,19 @@ export const traverse = (
     stackOrQueue = new _QueueToStackAdapter(new _Queue());
   }
 
+  const traversalMeta: TraversalMeta = {
+    visitedNodes: new WeakSet(),
+    depth: 0,
+  };
+  if (typeof opts.pathSeparator !== 'string') {
+    traversalMeta.nodePath = null;
+  }
+
   stackOrQueue.push({
     parent: null,
     key: null,
     value: root,
-    meta: {
-      visitedNodes: new WeakSet(),
-      currentPath: null,
-      depth: 0,
-    },
+    meta: traversalMeta,
   });
 
   _traverse(callback, stackOrQueue, opts as Required<TraversalOpts>);
@@ -84,7 +88,7 @@ const _traverse = (
 
     if (valueIsObject) {
       visitedNodes.add(value); // only add if valueIsObject
-      const { depth, currentPath } = meta;
+      const { depth, nodePath } = meta;
       const newDepth = depth + 1;
       if (newDepth > maxDepth) {
         continue;
@@ -102,13 +106,13 @@ const _traverse = (
 
         let newPath: string;
         if (!disablePathTracking) {
-          if (!currentPath) {
+          if (!nodePath) {
             newPath = property;
           } else {
-            newPath = `${currentPath}${pathSeparator}${property}`;
+            newPath = `${nodePath}${pathSeparator}${property}`;
           }
 
-          traversalMeta.currentPath = newPath;
+          traversalMeta.nodePath = newPath;
         }
 
         newNodesToVisit.push({

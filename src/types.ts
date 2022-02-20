@@ -1,7 +1,7 @@
 export type ArbitraryObject = Record<string, any>;
 
 export interface TraversalMeta {
-  currentPath?: string | null;
+  nodePath?: string | null;
   visitedNodes: WeakSet<ArbitraryObject>;
   depth: number;
 }

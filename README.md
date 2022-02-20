@@ -116,7 +116,7 @@ const pathToPeopleNamedJohn = [];
 traverse(network, context => {
   const { parent, key, value, meta } = context;
   if (value.name && value.name.startsWith('John')) {
-    pathToPeopleNamedJohn.push(meta.currentPath);
+    pathToPeopleNamedJohn.push(meta.nodePath);
   }
 });
 

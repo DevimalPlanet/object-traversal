@@ -1,4 +1,4 @@
-import { TraversalOpts, _Queue, _QueueToStackAdapter } from '.';
+import { TraversalMeta, TraversalOpts, _Queue, _QueueToStackAdapter } from '.';
 import { _Stack } from './stack';
 import {
   ArbitraryObject,
@@ -12,6 +12,7 @@ const DEFAULT_TRAVERSAL_OPTS: Required<TraversalOpts> = {
   cycleHandling: true,
   maxDepth: Number.MAX_SAFE_INTEGER,
   haltOnTruthy: false,
+  pathSeparator: '.',
 };
 
 /** Applies a given callback function to all properties of an object and its children */
@@ -64,7 +65,14 @@ const _traverse = (
     newNodesToVisit = new _QueueToStackAdapter(new _Queue());
   }
 
-  const { maxNodeCount, cycleHandling, maxDepth, haltOnTruthy } = opts;
+  const {
+    maxNodeCount,
+    cycleHandling,
+    maxDepth,
+    haltOnTruthy,
+    pathSeparator,
+  } = opts;
+  const disablePathTracking = typeof pathSeparator !== 'string';
   const allowCycles = !cycleHandling;
   let visitedNodeCount = 0;
   while (!stackOrQueue.isEmpty() && maxNodeCount > visitedNodeCount) {
@@ -94,20 +102,25 @@ const _traverse = (
       for (let i = 0; i < keys.length; i++) {
         const property = keys[i];
 
+        const traversalMeta: TraversalMeta = {
+          visitedNodes,
+          depth: newDepth,
+        };
+
         let newPath: string;
-        if (!currentPath) {
-          newPath = property;
-        } else {
-          newPath = `${currentPath}.${property}`;
+        if (!disablePathTracking) {
+          if (!currentPath) {
+            newPath = property;
+          } else {
+            newPath = `${currentPath}${pathSeparator}${property}`;
+          }
+
+          traversalMeta.currentPath = newPath;
         }
 
         newNodesToVisit.push({
           value: value[property],
-          meta: {
-            currentPath: newPath,
-            visitedNodes: visitedNodes,
-            depth: newDepth,
-          },
+          meta: traversalMeta,
           key: property,
           parent: value,
         });

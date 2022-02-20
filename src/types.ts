@@ -1,7 +1,7 @@
 export type ArbitraryObject = Record<string, any>;
 
 export interface TraversalMeta {
-  currentPath: string | null;
+  currentPath?: string | null;
   visitedNodes: WeakSet<ArbitraryObject>;
   depth: number;
 }
@@ -26,6 +26,7 @@ export type TraversalOpts = {
   maxDepth?: number;
   /** Stop the traversal as soon as the callback function returns a truthy value. Default: false */
   haltOnTruthy?: boolean;
+  pathSeparator?: string | null;
 };
 
 export type TraversalType = 'depth-first' | 'breadth-first';

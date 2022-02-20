@@ -346,6 +346,20 @@ for (let traversalType of traversalTypes) {
 
         expect(counter).toEqual(nodeCount);
       });
+
+      it('path separator can be configured', () => {
+        const paths: any[] = [];
+        const callback = (tm: TraversalCallbackContext) => {
+          paths.push(tm.meta.currentPath);
+        };
+
+        traverse({ a: { b: 1 } }, callback, {
+          traversalType,
+          pathSeparator: ',',
+        });
+
+        expect(paths[2]).toContain(',');
+      });
     });
 
     describe('object-traversal compared with traverse package', () => {

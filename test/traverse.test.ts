@@ -1,3 +1,4 @@
+import traverseJs from 'traverse';
 import {
   TraversalCallback,
   TraversalCallbackContext,
@@ -6,7 +7,6 @@ import {
 } from '../src';
 // import { createBenchMock } from '../benchmarks/helper';
 const { createBenchMock } = require('../benchmarks/helper');
-import traverseJs from 'traverse';
 
 const mockDimensions = 10;
 /** the total amount of nodes that exist in mock objects */
@@ -359,6 +359,20 @@ for (let traversalType of traversalTypes) {
         });
 
         expect(paths[2]).toContain(',');
+      });
+
+      it('path tracking can be turned off', () => {
+        const paths: any[] = [];
+        const callback = (tm: TraversalCallbackContext) => {
+          paths.push(tm.meta.nodePath);
+        };
+
+        traverse({ a: { b: 1 } }, callback, {
+          traversalType,
+          pathSeparator: null,
+        });
+
+        expect(paths.every(v => !v)).toBeTruthy();
       });
     });
 

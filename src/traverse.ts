@@ -1,11 +1,13 @@
-import { _Queue, _QueueToStackAdapter } from './queue';
-import { TraversalMeta, TraversalOpts } from './types';
 import { DEFAULT_TRAVERSAL_OPTS } from './constants';
+import { _Queue, _QueueToStackAdapter } from './queue';
 import { _Stack } from './stack';
 import {
   ArbitraryObject,
+  FullTraversalOpts,
   TraversalCallback,
   TraversalCallbackContext,
+  TraversalMeta,
+  TraversalOpts,
 } from './types';
 
 /** Applies a given callback function to all properties of an object and its children */
@@ -18,10 +20,15 @@ export const traverse = (
     throw new Error('First argument must be an object');
   }
 
-  opts = Object.assign({}, DEFAULT_TRAVERSAL_OPTS, opts);
+  const fullOpts = Object.assign(
+    {},
+    DEFAULT_TRAVERSAL_OPTS,
+    opts
+  ) as FullTraversalOpts;
+  fullOpts.disablePathTracking = typeof fullOpts.pathSeparator !== 'string';
 
   let stackOrQueue: _Stack<TraversalCallbackContext>;
-  if (opts.traversalType === 'depth-first') {
+  if (fullOpts.traversalType === 'depth-first') {
     stackOrQueue = new _Stack();
   } else {
     stackOrQueue = new _QueueToStackAdapter(new _Queue());
@@ -31,7 +38,7 @@ export const traverse = (
     visitedNodes: new WeakSet(),
     depth: 0,
   };
-  if (typeof opts.pathSeparator !== 'string') {
+  if (!fullOpts.disablePathTracking) {
     traversalMeta.nodePath = null;
   }
 
@@ -42,13 +49,13 @@ export const traverse = (
     meta: traversalMeta,
   });
 
-  _traverse(callback, stackOrQueue, opts as Required<TraversalOpts>);
+  _traverse(callback, stackOrQueue, fullOpts);
 };
 
 const _traverse = (
   callback: TraversalCallback,
   stackOrQueue: _Stack<TraversalCallbackContext>,
-  opts: Required<TraversalOpts>
+  opts: FullTraversalOpts
 ) => {
   /**
    * Using a stack instead of a queue to preserve the natural depth-first traversal order. Using a queue or traversing an array
@@ -69,7 +76,6 @@ const _traverse = (
     haltOnTruthy,
     pathSeparator,
   } = opts;
-  const disablePathTracking = typeof pathSeparator !== 'string';
   const allowCycles = !cycleHandling;
   let visitedNodeCount = 0;
   while (!stackOrQueue.isEmpty() && maxNodeCount > visitedNodeCount) {
@@ -105,7 +111,7 @@ const _traverse = (
         };
 
         let newPath: string;
-        if (!disablePathTracking) {
+        if (!opts.disablePathTracking) {
           if (!nodePath) {
             newPath = property;
           } else {

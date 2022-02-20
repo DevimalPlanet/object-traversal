@@ -29,4 +29,8 @@ export type TraversalOpts = {
   pathSeparator?: string | null;
 };
 
+export type FullTraversalOpts = Required<TraversalOpts> & {
+  disablePathTracking: boolean;
+};
+
 export type TraversalType = 'depth-first' | 'breadth-first';

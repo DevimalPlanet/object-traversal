@@ -1,9 +1,10 @@
-import { TraversalOpts, _Queue, _QueueToStackAdapter } from '.';
+import { _Queue, _QueueToStackAdapter } from './queue';
 import { _Stack } from './stack';
 import {
   ArbitraryObject,
   TraversalCallback,
   TraversalCallbackContext,
+  TraversalOpts,
 } from './types';
 
 const DEFAULT_TRAVERSAL_OPTS: Required<TraversalOpts> = {
@@ -14,25 +15,49 @@ const DEFAULT_TRAVERSAL_OPTS: Required<TraversalOpts> = {
   haltOnTruthy: false,
 };
 
-/** Applies a given callback function to all properties of an object and its children */
-export const traverse = (
+export function traverse(
   root: ArbitraryObject,
   callback: TraversalCallback,
   opts?: TraversalOpts
-): void => {
+): void;
+export function traverse(
+  root: ArbitraryObject,
+  opts?: TraversalOpts
+): IterableIterator<TraversalCallbackContext>;
+
+/** Applies a given callback function to all properties of an object and its children */
+export function traverse(
+  root: ArbitraryObject,
+  callback?: unknown,
+  opts?: unknown
+): unknown {
   if (!(root instanceof Object)) {
     throw new Error('First argument must be an object');
   }
 
-  opts = Object.assign({}, DEFAULT_TRAVERSAL_OPTS, opts);
+  /** support both traverse(root) and traverse(root, callback) with or without opts */
+  const isIteratorOverloadCall =
+    !callback || Object.getPrototypeOf(callback) === Object.prototype;
+  if (isIteratorOverloadCall) {
+    // if this condition is met, we are using the iterator signature
+    // move args for compatibility with the callback signature
+    opts = callback;
+    callback = null;
+  }
+
+  /** merge provided opts with default opts */
+  const fullOpts: Required<TraversalOpts> = Object.assign(
+    {},
+    DEFAULT_TRAVERSAL_OPTS,
+    opts
+  );
 
   let stackOrQueue: _Stack<TraversalCallbackContext>;
-  if (opts.traversalType === 'depth-first') {
+  if (fullOpts.traversalType === 'depth-first') {
     stackOrQueue = new _Stack();
   } else {
     stackOrQueue = new _QueueToStackAdapter(new _Queue());
   }
-
   stackOrQueue.push({
     parent: null,
     key: null,
@@ -44,78 +69,116 @@ export const traverse = (
     },
   });
 
-  _traverse(callback, stackOrQueue, opts as Required<TraversalOpts>);
-};
-
-const _traverse = (
-  callback: TraversalCallback,
-  stackOrQueue: _Stack<TraversalCallbackContext>,
-  opts: Required<TraversalOpts>
-) => {
-  /**
-   * Using a stack instead of a queue to preserve the natural depth-first traversal order. Using a queue or traversing an array
-   *   in order would lead the depth-first to traverse the value.properties in reverse order.
-   * Breadth-first traversal uses queues as usual.
-   */
-  let newNodesToVisit: _Stack<TraversalCallbackContext>;
-  if (opts.traversalType === 'depth-first') {
-    newNodesToVisit = new _Stack();
+  if (!isIteratorOverloadCall) {
+    return new Traversal(
+      callback as TraversalCallback,
+      stackOrQueue,
+      fullOpts
+    ).traverse();
   } else {
-    newNodesToVisit = new _QueueToStackAdapter(new _Queue());
+    return new Traversal(callback as null, stackOrQueue, fullOpts);
+  }
+}
+
+class Traversal {
+  private iteratorCtx?: TraversalCallbackContext;
+
+  constructor(
+    private readonly callback: TraversalCallback | null,
+    private readonly stackOrQueue: _Stack<TraversalCallbackContext>,
+    private readonly opts: Required<TraversalOpts>
+  ) {}
+
+  private iteratorCallback = (ctx: TraversalCallbackContext) => {
+    this.iteratorCtx = ctx;
+  };
+
+  private iteratorNext = () => {
+    this.iteratorCtx = undefined;
+    const traversor = new Traversal(this.iteratorCallback, this.stackOrQueue, {
+      ...this.opts,
+      maxNodeCount: 1,
+    } as Required<TraversalOpts>);
+    traversor.traverse();
+    return {
+      value: this.iteratorCtx,
+      done: !this.iteratorCtx,
+    };
+  };
+
+  [Symbol.iterator]() {
+    return {
+      next: this.iteratorNext,
+    };
   }
 
-  const { maxNodeCount, cycleHandling, maxDepth, haltOnTruthy } = opts;
-  const allowCycles = !cycleHandling;
-  let visitedNodeCount = 0;
-  while (!stackOrQueue.isEmpty() && maxNodeCount > visitedNodeCount) {
-    const callbackContext = stackOrQueue.pop()!;
-    const { value, meta } = callbackContext;
-    const { visitedNodes } = meta;
-    const valueIsObject = value instanceof Object;
-    if (!valueIsObject || allowCycles || !visitedNodes.has(value)) {
-      if (callback(callbackContext) && haltOnTruthy) {
-        break;
-      }
-      visitedNodeCount++;
+  traverse() {
+    const { callback, stackOrQueue, opts } = this;
+    /**
+     * Using a stack instead of a queue to preserve the natural depth-first traversal order. Using a queue or traversing an array
+     *   in order would lead the depth-first to traverse the value.properties in reverse order.
+     * Breadth-first traversal uses queues as usual.
+     */
+    let newNodesToVisit: _Stack<TraversalCallbackContext>;
+    if (opts.traversalType === 'depth-first') {
+      newNodesToVisit = new _Stack();
     } else {
-      continue;
+      newNodesToVisit = new _QueueToStackAdapter(new _Queue());
     }
 
-    if (valueIsObject) {
-      visitedNodes.add(value); // only add if valueIsObject
-      const { depth, currentPath } = meta;
-      const newDepth = depth + 1;
-      if (newDepth > maxDepth) {
+    const { maxNodeCount, cycleHandling, maxDepth, haltOnTruthy } = opts;
+    const allowCycles = !cycleHandling;
+    let visitedNodeCount = 0;
+    while (!stackOrQueue.isEmpty() && maxNodeCount > visitedNodeCount) {
+      const callbackContext = stackOrQueue.pop()!;
+      const { value, meta } = callbackContext;
+      const { visitedNodes } = meta;
+      const valueIsObject = value instanceof Object;
+      if (!valueIsObject || allowCycles || !visitedNodes.has(value)) {
+        if (callback && callback(callbackContext) && haltOnTruthy) {
+          break;
+        }
+        visitedNodeCount++;
+      } else {
         continue;
       }
 
-      newNodesToVisit.reset();
-      const keys = Object.keys(value);
-      for (let i = 0; i < keys.length; i++) {
-        const property = keys[i];
-
-        let newPath: string;
-        if (!currentPath) {
-          newPath = property;
-        } else {
-          newPath = `${currentPath}.${property}`;
+      if (valueIsObject) {
+        visitedNodes.add(value); // only add if valueIsObject
+        const { depth, currentPath } = meta;
+        const newDepth = depth + 1;
+        if (newDepth > maxDepth) {
+          continue;
         }
 
-        newNodesToVisit.push({
-          value: value[property],
-          meta: {
-            currentPath: newPath,
-            visitedNodes: visitedNodes,
-            depth: newDepth,
-          },
-          key: property,
-          parent: value,
-        });
-      }
+        newNodesToVisit.reset();
+        const keys = Object.keys(value);
+        for (let i = 0; i < keys.length; i++) {
+          const property = keys[i];
 
-      while (!newNodesToVisit.isEmpty()) {
-        stackOrQueue.push(newNodesToVisit.pop());
+          let newPath: string;
+          if (!currentPath) {
+            newPath = property;
+          } else {
+            newPath = `${currentPath}.${property}`;
+          }
+
+          newNodesToVisit.push({
+            value: value[property],
+            meta: {
+              currentPath: newPath,
+              visitedNodes: visitedNodes,
+              depth: newDepth,
+            },
+            key: property,
+            parent: value,
+          });
+        }
+
+        while (!newNodesToVisit.isEmpty()) {
+          stackOrQueue.push(newNodesToVisit.pop());
+        }
       }
     }
   }
-};
+}

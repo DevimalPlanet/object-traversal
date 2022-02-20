@@ -431,3 +431,26 @@ describe(`traversal order`, () => {
     expect(values).toEqual([0, 1, 5, 2, 3, 6, 4]);
   });
 });
+
+describe(`traverse iterator`, () => {
+  it('yields ctx', () => {
+    let value: any;
+    const iterator = traverse(mockWithoutCycles);
+    for (const ctx of iterator) {
+      value = ctx.value;
+      break;
+    }
+    expect(value).toStrictEqual(mockWithoutCycles);
+  });
+
+  it('traverses same nodes as callback version', () => {
+    const iteratorContexts: any[] = [];
+    const callbackContext: any[] = [];
+    const iterator = traverse(mockWithoutCycles);
+    for (const ctx of iterator) {
+      iteratorContexts.push(ctx);
+    }
+    traverse(mockWithoutCycles, ctx => callbackContext.push(ctx));
+    expect(iteratorContexts).toEqual(callbackContext);
+  });
+});

@@ -1,19 +1,11 @@
 import { TraversalMeta, TraversalOpts, _Queue, _QueueToStackAdapter } from '.';
+import { DEFAULT_TRAVERSAL_OPTS } from './constants';
 import { _Stack } from './stack';
 import {
   ArbitraryObject,
   TraversalCallback,
   TraversalCallbackContext,
 } from './types';
-
-const DEFAULT_TRAVERSAL_OPTS: Required<TraversalOpts> = {
-  traversalType: 'depth-first',
-  maxNodeCount: Number.MAX_SAFE_INTEGER,
-  cycleHandling: true,
-  maxDepth: Number.MAX_SAFE_INTEGER,
-  haltOnTruthy: false,
-  pathSeparator: '.',
-};
 
 /** Applies a given callback function to all properties of an object and its children */
 export const traverse = (

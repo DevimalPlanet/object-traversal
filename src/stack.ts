@@ -15,7 +15,7 @@ export class _Stack<T = any> {
     return !this.tail;
   }
 
-  reset() {
+  reset(): void {
     this.tail = undefined;
   }
 }

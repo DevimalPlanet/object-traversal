@@ -25,7 +25,7 @@ export class _Queue<T = any> {
     return !this.head;
   }
 
-  reset() {
+  reset(): void {
     this.head = this.tail = undefined;
   }
 }

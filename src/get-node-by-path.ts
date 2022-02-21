@@ -5,7 +5,7 @@ export function getNodeByPath(
   root: ArbitraryObject,
   path: string,
   separator: string = DEFAULT_SEPARATOR
-) {
+): any {
   let node: any = root;
   const segments: string[] = path.split(separator);
 

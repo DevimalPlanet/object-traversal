@@ -3,7 +3,7 @@ const { traverse: object_traversal } = require('../dist');
 const traverse = require('traverse');
 const { createBenchMock } = require('./helper');
 
-console.log('\nStarting traversal bench')
+console.log('\nStarting traversal bench');
 console.time('Benching traversal took');
 const mocks = {
   // bench2x2WithCycles: createBenchMock(2, 2, true),

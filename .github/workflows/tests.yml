@@ -22,5 +22,6 @@ jobs:
           node-version: '16'
       - run: npm i -g yarn
       - run: yarn install
-      - run: npm run test:cov
+      - run: npm install -g codecov
+      - run: npm run test:cov && codecov
       - run: npm run benchmark

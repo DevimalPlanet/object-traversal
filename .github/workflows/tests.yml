@@ -1,4 +1,4 @@
-name: tests
+name: build
 on: [push, pull_request]
 # on:
 # push:
@@ -22,6 +22,8 @@ jobs:
           node-version: '16'
       - run: npm i -g yarn
       - run: yarn install
-      - run: npm install -g codecov
-      - run: npm run test:cov && codecov
+      - run: npm run test:cov
+      - name: Codecov
+        uses: codecov/codecov-action@v2.1.0
       - run: npm run benchmark
+

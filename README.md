@@ -1,6 +1,38 @@
 # object-traversal
 
+<div>
+
+<a href="https://github.com/DevimalPlanet/object-traversal/actions/workflows/tests.yml">
+  <img src="https://github.com/DevimalPlanet/object-traversal/actions/workflows/tests.yml/badge.svg" alt="License" />
+</a>
+
+<a href="https://github.com/DevimalPlanet/object-traversal/blob/master/package.json">
+  <img src="https://img.shields.io/badge/deoendencies-0-brightgreen" alt="License" />
+</a>
+
+<a href="https://codecov.io/gh/DevimalPlanet/object-traversal/branch/main/graph/badge.svg?token=JJOGZJEZBO">
+  <img src="https://codecov.io/gh/DevimalPlanet/object-traversal/branch/main/graph/badge.svg?token=JJOGZJEZBO" alt="License" />
+</a>
+
+<a href="https://www.npmjs.com/package/object-traversal">
+<img src="https://img.shields.io/npm/dm/object-traversal.svg" alt="npm downloads" />
+</a>
+
+<a href="https://github.com/DevimalPlanet/object-traversal/blob/master/LICENSE">
+  <img src="https://img.shields.io/github/license/DevimalPlanet/object-traversal.svg" alt="License" />
+</a>
+
+<a href="http://nodejs.org/download/">
+  <img src="https://img.shields.io/node/v/object-traversal.svg?style=flat" alt="License" />
+</a>
+
+</div>
+
+<br />
+
+<div>
 Simple, performant and configurable utility for traversing and applying callback functions to any portion of a javascript object.
+</div>
 
 ## Installation
 

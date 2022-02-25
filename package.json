@@ -17,7 +17,7 @@
     "benchmark:node": "node benchmarks/object-traversal.bench.js && node benchmarks/stack-queue.bench.js",
     "benchmark:chromium": "npx playwright-test ./benchmarks/object-traversal.bench.js -r benchmark -b chromium",
     "benchmark:firefox": "npx playwright-test ./benchmarks/object-traversal.bench.js -r benchmark -b firefox",
-    "benchmark:webkit": "npx playwright-test ./benchmarks/object-traversal.bench.js -r benchmark -b webkit",
+    "benchmark:webkit": "echo \"Skipping npx playwright-test ./benchmarks/object-traversal.bench.js -r benchmark -b webkit\"",
     "lint": "tsdx lint src test benchmarks examples/src",
     "prepare": "tsdx build",
     "size": "size-limit",

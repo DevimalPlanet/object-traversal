@@ -20,7 +20,7 @@ export type TraversalCallback = (context: TraversalCallbackContext) => any;
 
 export type TraversalOpts = {
   traversalType?: TraversalType;
-  maxNodeCount?: number;
+  maxNodes?: number;
   cycleHandling?: boolean;
   /** The maximum depth that must be traversed (inclusive). Root object has depth 0. */
   maxDepth?: number;

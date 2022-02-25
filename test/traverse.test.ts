@@ -79,8 +79,8 @@ describe(`object-traversal`, () => {
   });
 
   describe('configuration options', () => {
-    describe('maxNodeCount', () => {
-      it('traverses the entire object when maxNodeCount omitted', () => {
+    describe('maxNodes', () => {
+      it('traverses the entire object when maxNodes omitted', () => {
         let counter = 0;
         const callback = () => {
           counter++;
@@ -90,44 +90,44 @@ describe(`object-traversal`, () => {
         expect(counter).toEqual(nodeCount);
       });
 
-      it('traverses the entire object when maxNodeCount is bigger than nodeCount', () => {
-        const maxNodeCount = nodeCount + 1;
+      it('traverses the entire object when maxNodes is bigger than nodeCount', () => {
+        const maxNodes = nodeCount + 1;
         let counter = 0;
         const callback = () => {
           counter++;
         };
 
         traverse(mockWithoutCycles, callback, {
-          maxNodeCount,
+          maxNodes,
         });
         expect(counter).toEqual(nodeCount);
       });
 
-      it('halts when maxNodeCount is reached in non-cyclic objects', () => {
-        const maxNodeCount = 3;
+      it('halts when maxNodes is reached in non-cyclic objects', () => {
+        const maxNodes = 3;
         let counter = 0;
         const callback = () => {
           counter++;
         };
 
         traverse(mockWithoutCycles, callback, {
-          maxNodeCount,
+          maxNodes,
         });
-        expect(counter).toEqual(maxNodeCount);
+        expect(counter).toEqual(maxNodes);
       });
 
-      it('halts when maxNodeCount is reached in cyclic objects with cycleHandling is false', () => {
-        const maxNodeCount = nodeCount + 1; // + 1 tests that it continue traversing infinite loop, if it weren't for maxNodeCount option
+      it('halts when maxNodes is reached in cyclic objects with cycleHandling is false', () => {
+        const maxNodes = nodeCount + 1; // + 1 tests that it continue traversing infinite loop, if it weren't for maxNodes option
         let counter = 0;
         const callback = () => {
           counter++;
         };
 
         traverse(mockWithCycles, callback, {
-          maxNodeCount,
+          maxNodes,
           cycleHandling: false,
         });
-        expect(counter).toEqual(maxNodeCount);
+        expect(counter).toEqual(maxNodes);
       });
     });
 

@@ -4,7 +4,7 @@ export const DEFAULT_SEPARATOR = '.';
 
 export const DEFAULT_TRAVERSAL_OPTS: Required<TraversalOpts> = {
   traversalType: 'depth-first',
-  maxNodeCount: Number.MAX_SAFE_INTEGER,
+  maxNodes: Number.MAX_SAFE_INTEGER,
   cycleHandling: true,
   maxDepth: Number.MAX_SAFE_INTEGER,
   haltOnTruthy: false,

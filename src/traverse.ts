@@ -70,7 +70,7 @@ const _traverse = (
   }
 
   const {
-    maxNodeCount,
+    maxNodes,
     cycleHandling,
     maxDepth,
     haltOnTruthy,
@@ -78,7 +78,7 @@ const _traverse = (
   } = opts;
   const allowCycles = !cycleHandling;
   let visitedNodeCount = 0;
-  while (!stackOrQueue.isEmpty() && maxNodeCount > visitedNodeCount) {
+  while (!stackOrQueue.isEmpty() && maxNodes > visitedNodeCount) {
     const callbackContext = stackOrQueue.pop()!;
     const { value, meta } = callbackContext;
     const { visitedNodes } = meta;

@@ -228,7 +228,7 @@ describe(`object-traversal`, () => {
           pathSeparator: null,
         });
 
-        expect(paths.every(v => !v)).toBeTruthy();
+        expect(paths.every(v => v === undefined)).toBeTruthy();
       });
     });
 

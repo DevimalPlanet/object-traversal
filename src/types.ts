@@ -20,7 +20,7 @@ export type TraversalCallback = (context: TraversalCallbackContext) => any;
 
 export type TraversalOpts = {
   /**
-   * Default: depth-first'
+   * Default: 'depth-first'
    */
   traversalType?: TraversalType;
 

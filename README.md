@@ -36,30 +36,61 @@ Flexible and performant utility for traversing javascript objects.
 
 ## ✔ Features
 
-- Speedy
-  - Traverses over 20 million nodes per second (2020 MacBook Air)
-  - Around 10 times faster than popular alternatives (see for yourself: `npm run benchmark`)
-- Flexible
-  - Tweak `traversalOpts` for even more speed
-  - Sane configuration defaults out of the box
-- No dependencies
-- Big test coverage
-- Typescript
+1. Performance
+   - Traverses over 20 million nodes per second. _(2020 MacBook Air)_
+   - Around 10 times faster than popular alternatives. _(`npm run benchmark`)_
+1. Configurable
+   - Tweak `traversalOpts` for even more speed, traversal order, maxDepth and more.
+1. Zero dependencies
+   - Works on both NodeJS and the browser.
+1. Big test coverage
+1. Typescript
 
-## Usage
+## Docs
+
+### Usage
 
 ```javascript
 import { traverse } from 'object-traversal';
 
-traverse(object, callback, opts);
+traverse(object, callback, opts?);
 ```
 
-## Traversal Options
+### object
+
+Any instance of javascript object, cyclic or otherwise.
+
+### callback
+
+A function that will be called once for each node in the provided root `object`, including the root `object` itself.
+
+The `callback` function has the following signature:
+
+```typescript
+// Callback function signature
+export type TraversalCallback = (context: TraversalCallbackContext) => any;
+
+// Callback context
+export type TraversalCallbackContext = {
+  parent: ArbitraryObject | null; // parent is null when callback is being called on the root `object`
+  key: string | null; // key is null when callback is being called on the root `object`
+  value: any;
+  meta: {
+    nodePath?: string | null;
+    visitedNodes: WeakSet<ArbitraryObject>;
+    depth: number;
+  };
+};
+```
+
+### opts
+
+An optional configuration object. See below for the available options and their default values.
 
 ```typescript
 export type TraversalOpts = {
   /**
-   * Default: depth-first'
+   * Default: 'depth-first'
    */
   traversalType?: 'depth-first' | 'breadth-first';
 
@@ -108,7 +139,7 @@ export type TraversalOpts = {
 
 ## Examples
 
-### Double all numbers in the example object (in-place)
+### Double all numbers in-place
 
 <details>
   <summary>Click to expand</summary>
@@ -142,7 +173,7 @@ console.log(exampleObject);
 // }
 ```
 
-### Find deep nested values matching criteria
+### Find deep nested values by criteria
 
 <details>
   <summary>Click to expand</summary>
@@ -195,7 +226,7 @@ console.log(numbersOver25);
 // [ 52, 42, 33 ]
 ```
 
-### Find paths
+### Find paths by criteria
 
 <details>
   <summary>Click to expand</summary>
@@ -287,6 +318,8 @@ network = {
 </details>
 
 ```javascript
+import { getNodeByPath } from 'object-traversal';
+
 const firstFriend = getNodeByPath(network, 'friends.0');
 console.log(firstFriend);
 // { name: 'John Doe', age: 25, friends: [] }
@@ -295,11 +328,11 @@ console.log(firstFriend);
 ## Roadmap
 
 - [x] Configurable BFS/DFS
-- [ ] Iterator support
 - [x] Max depth
 - [x] Configurable path separator
 - [x] Utility for consuming paths
 - [x] Toggleable cycle handler
+- [ ] Iterator support
 - [ ] Sequential promise support
 - [ ] Multi threading & further speed enhancements
 - [ ] Streaming research

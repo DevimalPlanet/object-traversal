@@ -1,9 +1,0 @@
-{
-  "name": "examples",
-  "description": "",
-  "scripts": {},
-  "license": "ISC",
-  "dependencies": {
-    "object-traversal": "^0.1.1"
-  }
-}

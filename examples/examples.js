@@ -156,3 +156,42 @@ network = {
 const firstFriend = getNodeByPath(network, 'friends.0');
 console.log(firstFriend);
 // { name: 'John Doe', age: 25, friends: [] }
+
+/**
+ * EXAMPLE: Traverse in breadth frist order
+ */
+network = {
+  name: 'Person 1',
+  age: 52,
+  friends: [
+    {
+      name: 'Person 2',
+      age: 42,
+      friends: [
+        {
+          name: 'Person 4',
+          age: 18,
+          friends: [],
+        },
+      ],
+    },
+    {
+      name: 'Person 3',
+      age: 25,
+      friends: [],
+    },
+  ],
+};
+
+let names = [];
+
+function getName({ parent, key, value, meta }) {
+  if (value.name) {
+    names.push(value.name);
+  }
+}
+
+traverse(network, getName, { traversalType: 'breadth-first' });
+
+console.log(names);
+// [ 'Person 1', 'Person 2', 'Person 3', 'Person 4' ]

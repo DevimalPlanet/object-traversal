@@ -279,7 +279,7 @@ console.log(pathsToPeopleNamedJohn);
 // [ 'friends.0', 'friends.1.friends.0' ]
 ```
 
-## Get node by path
+### Get node by path
 
 <details>
   <summary>Click to expand</summary>
@@ -323,6 +323,53 @@ import { getNodeByPath } from 'object-traversal';
 const firstFriend = getNodeByPath(network, 'friends.0');
 console.log(firstFriend);
 // { name: 'John Doe', age: 25, friends: [] }
+```
+
+### Breadth-first traversal
+
+<details>
+  <summary>Click to expand</summary>
+
+```javascript
+network = {
+  name: 'Person 1',
+  age: 52,
+  friends: [
+    {
+      name: 'Person 2',
+      age: 42,
+      friends: [
+        {
+          name: 'Person 4',
+          age: 18,
+          friends: [],
+        },
+      ],
+    },
+    {
+      name: 'Person 3',
+      age: 25,
+      friends: [],
+    },
+  ],
+};
+```
+
+</details>
+
+```javascript
+let names = [];
+
+function getName({ parent, key, value, meta }) {
+  if (value.name) {
+    names.push(value.name);
+  }
+}
+
+traverse(network, getName, { traversalType: 'breadth-first' });
+
+console.log(names);
+// [ 'Person 1', 'Person 2', 'Person 3', 'Person 4' ]
 ```
 
 ## Roadmap

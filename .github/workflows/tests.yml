@@ -1,4 +1,4 @@
-name: tests
+name: build
 on: [push, pull_request]
 # on:
 # push:
@@ -7,7 +7,14 @@ on: [push, pull_request]
 #     - 'v*.*.*'
 jobs:
   run-tests:
-    runs-on: ubuntu-latest
+    name: Build and test on Node ${{ matrix.node }} and ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node: ['10.x', '12.x', '14.x', '16.x']
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -16,4 +23,7 @@ jobs:
       - run: npm i -g yarn
       - run: yarn install
       - run: npm run test:cov
+      - name: Codecov
+        uses: codecov/codecov-action@v2.1.0
       - run: npm run benchmark
+

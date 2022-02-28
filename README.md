@@ -1,41 +1,185 @@
 # object-traversal
 
-Simple, performant and customizable utility for traversing and applying callback functions to any portion of a javascript object.
+<div>
+
+<a href="https://github.com/DevimalPlanet/object-traversal/actions/workflows/tests.yml">
+  <img src="https://github.com/DevimalPlanet/object-traversal/actions/workflows/tests.yml/badge.svg" alt="License" />
+</a>
+
+<a href="https://codecov.io/gh/DevimalPlanet/object-traversal/branch/main/graph/badge.svg?token=JJOGZJEZBO">
+  <img src="https://codecov.io/gh/DevimalPlanet/object-traversal/branch/main/graph/badge.svg?token=JJOGZJEZBO" alt="License" />
+</a>
+
+<a href="https://www.npmjs.com/package/object-traversal">
+<img src="https://img.shields.io/npm/dm/object-traversal.svg" alt="npm downloads" />
+</a>
+
+<a href="https://github.com/DevimalPlanet/object-traversal/blob/master/package.json">
+  <img src="https://img.shields.io/badge/dependencies-0-brightgreen" alt="License" />
+</a>
+
+<a href="https://github.com/DevimalPlanet/object-traversal/blob/master/LICENSE">
+  <img src="https://img.shields.io/github/license/DevimalPlanet/object-traversal.svg" alt="License" />
+</a>
+
+</div>
+
+<br />
+
+<div>
+Flexible and performant utility for traversing javascript objects.
+</div>
 
 ## Installation
 
     npm i object-traversal
 
-## Example usage
+## ✔ Features
 
-### Transform
+1. Performance
+   - Traverses over 20 million nodes per second. _(2020 MacBook Air)_
+   - Around 10 times faster than popular alternatives. _(`npm run benchmark`)_
+1. Configurable
+   - Tweak `traversalOpts` for even more speed, traversal order, maxDepth and more.
+1. Zero dependencies
+   - Works on both NodeJS and the browser.
+1. Big test coverage
+1. Typescript
+
+## Docs
+
+### Usage
 
 ```javascript
-const { traverse } = require('object-traversal');
+import { traverse } from 'object-traversal';
 
-const example = {
+traverse(object, callback, opts?);
+```
+
+### object
+
+Any instance of javascript object, cyclic or otherwise.
+
+### callback
+
+A function that will be called once for each node in the provided root `object`, including the root `object` itself.
+
+The `callback` function has the following signature:
+
+```typescript
+// Callback function signature
+export type TraversalCallback = (context: TraversalCallbackContext) => any;
+
+// Callback context
+export type TraversalCallbackContext = {
+  parent: ArbitraryObject | null; // parent is null when callback is being called on the root `object`
+  key: string | null; // key is null when callback is being called on the root `object`
+  value: any;
+  meta: {
+    nodePath?: string | null;
+    visitedNodes: WeakSet<ArbitraryObject>;
+    depth: number;
+  };
+};
+```
+
+### opts
+
+An optional configuration object. See below for the available options and their default values.
+
+```typescript
+export type TraversalOpts = {
+  /**
+   * Default: 'depth-first'
+   */
+  traversalType?: 'depth-first' | 'breadth-first';
+
+  /**
+   * Traversal stops when the traversed node count reaches this value.
+   *
+   * Default: Number.Infinity
+   */
+  maxNodes?: number;
+
+  /**
+   * If set to `true`, prevents infinite loops by not re-visiting repeated nodes.
+   *
+   * Default: true
+   */
+  cycleHandling?: boolean;
+
+  /**
+   * The maximum depth that must be traversed.
+   *
+   * Root object has depth 0.
+   *
+   * Default: Number.Infinity
+   */
+  maxDepth?: number;
+
+  /**
+   * If true, traversal will stop as soon as the callback returns a truthy value.
+   *
+   * This is useful for search use cases, where you typically want to skip traversing the remaining nodes once the target is found.
+   *
+   * Default: false
+   */
+  haltOnTruthy?: boolean;
+
+  /**
+   * The string to be used as separator for the `meta.nodePath` segments.
+   *
+   * Set to null if you wish to turn off `meta.nodePath` to increase traversal speed.
+   *
+   * Default: '.'
+   */
+  pathSeparator?: string | null;
+};
+```
+
+## Examples
+
+### Double all numbers in-place
+
+<details>
+  <summary>Click to expand</summary>
+
+```javascript
+exampleObject = {
   name: 'Hello World!',
   age: 1,
   accounts: 2,
   friends: 3,
 };
+```
 
-traverse(example, context => {
-  const { parent, key, value, meta } = context;
+</details>
+
+```javascript
+function double({ parent, key, value, meta }) {
   if (typeof value === 'number') {
     parent[key] = value * 2;
   }
-});
+}
 
-// { name: 'Hello World!', age: 2, accounts: 4, friends: 6 }
+traverse(exampleObject, double);
+
+console.log(exampleObject);
+// {
+//   name: 'Hello World!',
+//   age: 2,
+//   accounts: { checking: 4, savings: 6 },
+//   friends: 8
+// }
 ```
 
-### Find deep nested matches
+### Find deep nested values by criteria
+
+<details>
+  <summary>Click to expand</summary>
 
 ```javascript
-const { traverse } = require('object-traversal');
-
-const network = {
+network = {
   name: 'Person1',
   age: 52,
   friends: [
@@ -63,26 +207,32 @@ const network = {
     },
   ],
 };
+```
 
-const valuesOver25 = [];
+</details>
 
-traverse(network, context => {
-  const { parent, key, value, meta } = context;
+```javascript
+const numbersOver25 = [];
+
+function collectOver25({ parent, key, value, meta }) {
   if (key === 'age' && value > 25) {
-    valuesOver25.push(value);
+    numbersOver25.push(value);
   }
-});
+}
 
-console.log(valuesOver25);
+traverse(network, collectOver25);
+
+console.log(numbersOver25);
 // [ 52, 42, 33 ]
 ```
 
-### Find paths
+### Find paths by criteria
+
+<details>
+  <summary>Click to expand</summary>
 
 ```javascript
-const { traverse } = require('object-traversal');
-
-const network = {
+network = {
   name: 'Alice Doe',
   age: 52,
   friends: [
@@ -110,40 +260,130 @@ const network = {
     },
   ],
 };
+```
 
-const pathToPeopleNamedJohn = [];
+</details>
 
-traverse(network, context => {
-  const { parent, key, value, meta } = context;
+```javascript
+const pathsToPeopleNamedJohn = [];
+
+function callback({ parent, key, value, meta }) {
   if (value.name && value.name.startsWith('John')) {
-    pathToPeopleNamedJohn.push(meta.currentPath);
+    pathsToPeopleNamedJohn.push(meta.nodePath);
   }
-});
+}
 
-console.log(pathToPeopleNamedJohn);
+traverse(network, callback);
+
+console.log(pathsToPeopleNamedJohn);
 // [ 'friends.0', 'friends.1.friends.0' ]
 ```
 
-## Benchmarks
+### Get node by path
 
-Up to 15x faster than popular alternatives. `npm run benchmark`:
+<details>
+  <summary>Click to expand</summary>
 
-| Object size |         spec          | object-traversal ([npm](https://www.npmjs.com/package/object-traversal)) | traverse ([npm](https://www.npmjs.com/package/traverse)) |
-| :---------: | :-------------------: | :----------------------------------------------------------------------: | :------------------------------------------------------: |
-|    small    |   10 keys, depth 10   |                             141,300 ops/sec                              |                      21,241 ops/sec                      |
-|   medium    |  100 keys, depth 100  |                              2,227 ops/sec                               |                       258 ops/sec                        |
-|     big     | 1000 keys, depth 1000 |                              22.91 ops/sec                               |                       1.60 ops/sec                       |
+```javascript
+network = {
+  name: 'Alice Doe',
+  age: 52,
+  friends: [
+    {
+      name: 'John Doe',
+      age: 25,
+      friends: [],
+    },
+    {
+      name: 'Bob Doe',
+      age: 42,
+      friends: [
+        {
+          name: 'John Smith',
+          age: 18,
+          friends: [
+            {
+              name: 'Charlie Doe',
+              age: 33,
+              friends: [],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};
+```
 
-## Planned
+</details>
 
-- [ ] Docs
-- [ ] Configurable BFS/DFS
+```javascript
+import { getNodeByPath } from 'object-traversal';
+
+const firstFriend = getNodeByPath(network, 'friends.0');
+console.log(firstFriend);
+// { name: 'John Doe', age: 25, friends: [] }
+```
+
+### Breadth-first traversal
+
+<details>
+  <summary>Click to expand</summary>
+
+```javascript
+network = {
+  name: 'Person 1',
+  age: 52,
+  friends: [
+    {
+      name: 'Person 2',
+      age: 42,
+      friends: [
+        {
+          name: 'Person 4',
+          age: 18,
+          friends: [],
+        },
+      ],
+    },
+    {
+      name: 'Person 3',
+      age: 25,
+      friends: [],
+    },
+  ],
+};
+```
+
+</details>
+
+```javascript
+let names = [];
+
+function getName({ parent, key, value, meta }) {
+  if (value.name) {
+    names.push(value.name);
+  }
+}
+
+traverse(network, getName, { traversalType: 'breadth-first' });
+
+console.log(names);
+// [ 'Person 1', 'Person 2', 'Person 3', 'Person 4' ]
+```
+
+## Roadmap
+
+- [x] Configurable BFS/DFS
+- [x] Max depth
+- [x] Configurable path separator
+- [x] Utility for consuming paths
+- [x] Toggleable cycle handler
 - [ ] Iterator support
-- [ ] Max depth
-- [ ] Timeouts
-- [ ] Configurable path separator
-- [ ] Utility for consuming paths
-- [ ] Allow user to turn off cycle handler
+- [ ] Sequential promise support
+- [ ] Multi threading & further speed enhancements
+- [ ] Streaming research
+- [ ] More granular cycleHandling: 'revisit', 'norevisit', and 'off'
 
 ## Built with
 

@@ -3,11 +3,19 @@ const { traverse: object_traversal } = require('../dist');
 const traverse = require('traverse');
 const { createBenchMock } = require('./helper');
 
-console.time('Benching took');
+console.log('\nStarting traversal bench');
+console.time('Benching traversal took');
 const mocks = {
+  // bench2x2WithCycles: createBenchMock(2, 2, true),
+  // bench2x2WithoutCycles: createBenchMock(2, 2, false),
   bench10x10WithCycles: createBenchMock(10, 10, true),
-  bench100x100WithCycles: createBenchMock(100, 100, false, true),
+  // bench10x10WithoutCycles: createBenchMock(10, 10, false),
+  // bench100x100WithCycles: createBenchMock(100, 100, true),
+  // bench100x100WithoutCycles: createBenchMock(100, 100, false),
   bench1000x1000WithCycles: createBenchMock(1000, 1000, true),
+  // bench1000x1000WithoutCycles: createBenchMock(1000, 1000, false),
+  // bench2x2000WithCycles: createBenchMock(2, 1000, true),
+  // bench2x2000WithoutCycles: createBenchMock(2, 1000, false),
 };
 
 for (const key in mocks) {
@@ -47,4 +55,4 @@ for (const key in mocks) {
     .run({ async: false });
 }
 
-console.timeEnd('Benching took');
+console.timeEnd('Benching traversal took');

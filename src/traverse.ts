@@ -76,24 +76,25 @@ const _traverse = (
     haltOnTruthy,
     pathSeparator,
   } = opts;
-  const allowCycles = !cycleHandling;
   let visitedNodeCount = 0;
   while (!stackOrQueue.isEmpty() && maxNodes > visitedNodeCount) {
     const callbackContext = stackOrQueue.pop()!;
     const { value, meta } = callbackContext;
     const { visitedNodes } = meta;
-    const valueIsObject = value instanceof Object;
-    if (!valueIsObject || allowCycles || !visitedNodes.has(value)) {
-      if (callback(callbackContext) && haltOnTruthy) {
-        break;
-      }
-      visitedNodeCount++;
-    } else {
+    const nodeIsObject = value instanceof Object;
+
+    const skipNode = cycleHandling && nodeIsObject && visitedNodes.has(value);
+    if (skipNode) {
       continue;
     }
 
-    if (valueIsObject) {
-      visitedNodes.add(value); // only add if valueIsObject
+    if (callback(callbackContext) && haltOnTruthy) {
+      break;
+    }
+    visitedNodeCount++;
+
+    if (nodeIsObject) {
+      visitedNodes.add(value);
       const { depth, nodePath } = meta;
       const newDepth = depth + 1;
       if (newDepth > maxDepth) {

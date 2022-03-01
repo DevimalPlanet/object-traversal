@@ -13,7 +13,7 @@
     "test:cov": "tsdx test --coverage",
     "test:clear": "tsdx test --clearCache",
     "prebenchmark": "npm run build",
-    "benchmark": "npm run benchmark:node && npm run benchmark:chromium && npm run benchmark:firefox && npm run benchmark:webkit",
+    "benchmark": "npm run benchmark:node && npm run benchmark:chromium && npm run benchmark:firefox && npm run benchmark:webkit || echo 'WARNING: some of the benchmarks did not finish. See logs above.'",
     "benchmark:node": "node benchmarks/object-traversal.bench.js && node benchmarks/stack-queue.bench.js",
     "benchmark:chromium": "npx playwright-test ./benchmarks/object-traversal.bench.js -r benchmark -b chromium --timeout 60000",
     "benchmark:firefox": "npx playwright-test ./benchmarks/object-traversal.bench.js -r benchmark -b firefox --timeout 60000",

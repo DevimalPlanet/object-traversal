@@ -1,5 +1,6 @@
 {
   "name": "object-traversal",
+  "description": "Flexible and performant utility for traversing javascript objects",
   "author": "Devimal",
   "module": "dist/lib.esm.js",
   "version": "1.0.0",

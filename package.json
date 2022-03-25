@@ -3,7 +3,7 @@
   "description": "Flexible and performant utility for traversing javascript objects",
   "author": "Devimal",
   "module": "dist/object-traversal.esm.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {

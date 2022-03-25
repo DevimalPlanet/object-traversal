@@ -2,7 +2,7 @@
   "name": "object-traversal",
   "description": "Flexible and performant utility for traversing javascript objects",
   "author": "Devimal",
-  "module": "dist/lib.esm.js",
+  "module": "dist/object-traversal.esm.js",
   "version": "1.0.0",
   "license": "MIT",
   "main": "dist/index.js",
@@ -50,11 +50,11 @@
   },
   "size-limit": [
     {
-      "path": "dist/lib.cjs.production.min.js",
+      "path": "dist/object-traversal.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/lib.esm.js",
+      "path": "dist/object-traversal.esm.js",
       "limit": "10 KB"
     }
   ],

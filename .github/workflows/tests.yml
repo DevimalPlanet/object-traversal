@@ -24,6 +24,6 @@ jobs:
       - run: yarn install
       - run: npm run test:cov
       - name: Codecov
-        uses: codecov/codecov-action@v2.1.0
+        uses: codecov/codecov-action@v3.0.0
       - run: npm run benchmark
 

@@ -5743,10 +5743,10 @@ playwright-core@1.20.0:
     yauzl "2.10.0"
     yazl "2.5.1"
 
-playwright-test@7.3.0:
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/playwright-test/-/playwright-test-7.3.0.tgz#e870727f9c1f1541db8960e561c1dca3be2f27be"
-  integrity sha512-DQbI6MDZbNq9XaKCvlEvMqZV8GyEVkmXOeJm4riBp0sQhhtXHsFrQbTzTtTxPP7vF0LpA0e922jxVq8EaixzoQ==
+playwright-test@7.4.0:
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/playwright-test/-/playwright-test-7.4.0.tgz#f9470312a98a6f40f699392b44dac7b3b075792a"
+  integrity sha512-d1dG0mL5QmBc3DYxSk9dRDyCFYAKvkAbrjt4ceZnBOCyQAcs+0QBLUrB3aVmFei8YiFs+/DSHXaEa13xhfy1NQ==
   dependencies:
     buffer "^6.0.3"
     camelcase "^6.3.0"

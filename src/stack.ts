@@ -14,10 +14,6 @@ export class _Stack<T = any> {
   isEmpty(): boolean {
     return !this.tail;
   }
-
-  reset(): void {
-    this.tail = undefined;
-  }
 }
 
 interface Node<T> {

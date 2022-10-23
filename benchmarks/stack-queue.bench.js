@@ -19,7 +19,6 @@ for (let power = startPower; power < endPower; power++) {
       stack.push(1);
       stack.isEmpty();
       stack.pop();
-      stack.reset();
       stack.isEmpty();
     }
   });
@@ -30,7 +29,6 @@ for (let power = startPower; power < endPower; power++) {
       stack.enqueue(1);
       stack.isEmpty();
       stack.dequeue();
-      stack.reset();
       stack.isEmpty();
     }
   });
@@ -41,7 +39,6 @@ for (let power = startPower; power < endPower; power++) {
       stack.push(1);
       stack.isEmpty();
       stack.pop();
-      stack.reset();
       stack.isEmpty();
     }
   });

@@ -24,10 +24,6 @@ export class _Queue<T = any> {
   isEmpty(): boolean {
     return !this.head;
   }
-
-  reset(): void {
-    this.head = this.tail = undefined;
-  }
 }
 
 export class _QueueToStackAdapter<T = any> implements _Stack<T> {
@@ -43,10 +39,6 @@ export class _QueueToStackAdapter<T = any> implements _Stack<T> {
 
   isEmpty(): boolean {
     return this.queue.isEmpty();
-  }
-
-  reset(): void {
-    return this.queue.reset();
   }
 }
 

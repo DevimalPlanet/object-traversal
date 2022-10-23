@@ -101,7 +101,6 @@ const _traverse = (
         continue;
       }
 
-      newNodesToVisit.reset();
       const keys = Object.keys(value);
       for (let i = 0; i < keys.length; i++) {
         const property = keys[i];

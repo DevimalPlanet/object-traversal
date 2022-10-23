@@ -93,45 +93,46 @@ const _traverse = (
     }
     visitedNodeCount++;
 
-    if (nodeIsObject) {
-      visitedNodes.add(value);
-      const { depth, nodePath } = meta;
-      const newDepth = depth + 1;
-      if (newDepth > maxDepth) {
-        continue;
-      }
+    if (!nodeIsObject) {
+      continue;
+    }
+    visitedNodes.add(value);
 
-      const keys = Object.keys(value);
-      for (let i = 0; i < keys.length; i++) {
-        const property = keys[i];
+    const { depth, nodePath } = meta;
+    if (depth === maxDepth) {
+      continue;
+    }
 
-        const traversalMeta: TraversalMeta = {
-          visitedNodes,
-          depth: newDepth,
-        };
+    const keys = Object.keys(value);
+    for (let i = 0; i < keys.length; i++) {
+      const property = keys[i];
 
-        let newPath: string;
-        if (!opts.disablePathTracking) {
-          if (!nodePath) {
-            newPath = property;
-          } else {
-            newPath = `${nodePath}${pathSeparator}${property}`;
-          }
+      const traversalMeta: TraversalMeta = {
+        visitedNodes,
+        depth: depth + 1,
+      };
 
-          traversalMeta.nodePath = newPath;
+      let newPath: string;
+      if (!opts.disablePathTracking) {
+        if (!nodePath) {
+          newPath = property;
+        } else {
+          newPath = `${nodePath}${pathSeparator}${property}`;
         }
 
-        newNodesToVisit.push({
-          value: value[property],
-          meta: traversalMeta,
-          key: property,
-          parent: value,
-        });
+        traversalMeta.nodePath = newPath;
       }
 
-      while (!newNodesToVisit.isEmpty()) {
-        stackOrQueue.push(newNodesToVisit.pop());
-      }
+      newNodesToVisit.push({
+        value: value[property],
+        meta: traversalMeta,
+        key: property,
+        parent: value,
+      });
+    }
+
+    while (!newNodesToVisit.isEmpty()) {
+      stackOrQueue.push(newNodesToVisit.pop());
     }
   }
 };

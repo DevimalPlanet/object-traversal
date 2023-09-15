@@ -60,7 +60,7 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@size-limit/preset-small-lib": "8.2.6",
+    "@size-limit/preset-small-lib": "9.0.0",
     "@types/benchmark": "2.1.2",
     "@types/traverse": "0.6.32",
     "benchmark": "2.1.4",

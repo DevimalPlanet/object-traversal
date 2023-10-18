@@ -62,7 +62,7 @@
   "devDependencies": {
     "@size-limit/preset-small-lib": "8.2.6",
     "@types/benchmark": "2.1.2",
-    "@types/traverse": "0.6.32",
+    "@types/traverse": "0.6.34",
     "benchmark": "2.1.4",
     "husky": "8.0.3",
     "playwright-test": "9.2.0",

@@ -1602,10 +1602,10 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.0.tgz#7036640b4e21cc2f259ae826ce843d277dad8cff"
   integrity sha512-RJJrrySY7A8havqpGObOB4W92QXKJo63/jFLLgpvOtsGUqbQZ9Sbgl35KMm1DjC6j7AvmmU2bIno+3IyEaemaw==
 
-"@types/traverse@0.6.36":
-  version "0.6.36"
-  resolved "https://registry.yarnpkg.com/@types/traverse/-/traverse-0.6.36.tgz#9c4633e4a899a4ae7e91f92922e1d48ac305206b"
-  integrity sha512-0ko4fZgKQf2J/2FvDJHua9KZ19zJkfI5FxG1ZeEUhezEwuq6UL+4T0IxcBfmHilBeAj7OSUTwrm/lPnh8EB1/Q==
+"@types/traverse@0.6.37":
+  version "0.6.37"
+  resolved "https://registry.yarnpkg.com/@types/traverse/-/traverse-0.6.37.tgz#7b30a67dff00d8834498a5f6ef55b9e830645547"
+  integrity sha512-c90MVeDiUI1FhOZ6rLQ3kDWr50YE8+paDpM+5zbHjbmsqEp2DlMYkqnZnwbK9oI+NvDe8yRajup4jFwnVX6xsA==
 
 "@types/yargs-parser@*":
   version "20.2.0"

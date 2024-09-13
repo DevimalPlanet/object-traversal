@@ -7774,10 +7774,10 @@ tr46@^2.0.2:
   dependencies:
     punycode "^2.1.1"
 
-traverse@0.6.9:
-  version "0.6.9"
-  resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.6.9.tgz#76cfdbacf06382d460b76f8b735a44a6209d8b81"
-  integrity sha512-7bBrcF+/LQzSgFmT0X5YclVqQxtv7TDJ1f8Wj7ibBu/U6BMLeOpUxuZjV7rMc44UtKxlnMFigdhFAIszSX1DMg==
+traverse@0.6.10:
+  version "0.6.10"
+  resolved "https://registry.yarnpkg.com/traverse/-/traverse-0.6.10.tgz#4c93482381d794dee046882c036f3c4eee481324"
+  integrity sha512-hN4uFRxbK+PX56DxYiGHsTn2dME3TVr9vbNqlQGcGcPhJAn+tdP126iA+TArMpI4YSgnTkMWyoLl5bf81Hi5TA==
   dependencies:
     gopd "^1.0.1"
     typedarray.prototype.slice "^1.0.3"

@@ -65,7 +65,7 @@
     "@types/traverse": "0.6.37",
     "benchmark": "2.1.4",
     "husky": "8.0.3",
-    "playwright-test": "14.1.6",
+    "playwright-test": "14.1.7",
     "size-limit": "8.2.6",
     "traverse": "0.6.10",
     "tsdx": "0.14.1",

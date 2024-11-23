@@ -64,7 +64,7 @@
     "@types/benchmark": "2.1.5",
     "@types/traverse": "0.6.37",
     "benchmark": "2.1.4",
-    "husky": "8.0.3",
+    "husky": "9.1.7",
     "playwright-test": "14.1.7",
     "size-limit": "8.2.6",
     "traverse": "0.6.10",

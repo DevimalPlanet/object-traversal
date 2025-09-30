@@ -2499,13 +2499,6 @@ chokidar@^3.6.0:
   optionalDependencies:
     fsevents "~2.3.2"
 
-chokidar@^4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-4.0.1.tgz#4a6dff66798fb0f72a94f616abbd7e1a19f31d41"
-  integrity sha512-n8enUVCED/KVRQlab1hr3MVpcVMvxtZjmEa956u+4YijlmQED223XMSYj2tLuKvr4jcCTzNNMpQDUer72MMmzA==
-  dependencies:
-    readdirp "^4.0.1"
-
 chokidar@^4.0.3:
   version "4.0.3"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-4.0.3.tgz#7be37a4c03c9aee1ecfe862a4a23b2c70c205d30"
@@ -3802,11 +3795,6 @@ fb-watchman@^2.0.0:
   integrity sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==
   dependencies:
     bser "2.1.1"
-
-fdir@^6.4.0:
-  version "6.4.0"
-  resolved "https://registry.yarnpkg.com/fdir/-/fdir-6.4.0.tgz#8e80ab4b18a2ac24beebf9d20d71e1bc2627dbae"
-  integrity sha512-3oB133prH1o4j/L5lLW7uOCF1PlD+/It2L0eL/iAqWMB91RBbqTewABqxhj0ibBd90EEmWZq7ntIWzVaWcXTGQ==
 
 fdir@^6.4.3:
   version "6.4.3"
@@ -5672,11 +5660,6 @@ jest@^25.3.0, jest@^26.6.3:
     import-local "^3.0.2"
     jest-cli "^26.6.3"
 
-jiti@^2.0.0:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/jiti/-/jiti-2.3.3.tgz#39c66fc77476b92a694e65dfe04b294070e2e096"
-  integrity sha512-EX4oNDwcXSivPrw2qKH2LB5PoFxEvgtv2JgwW0bU858HoLQ+kutSvjLMUqBd0PeJYEinLWhoI9Ol0eYMqj/wNQ==
-
 jiti@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/jiti/-/jiti-2.4.2.tgz#d19b7732ebb6116b06e2038da74a55366faef560"
@@ -6241,13 +6224,6 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
-nanospinner@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/nanospinner/-/nanospinner-1.1.0.tgz#d17ff621cb1784b0a206b400da88a0ef6db39b97"
-  integrity sha512-yFvNYMig4AthKYfHFl1sLj7B2nkHL4lzdig4osvl9/LdGbXwrdFRoqBS98gsEsOakr0yH+r5NZ/1Y9gdVB8trA==
-  dependencies:
-    picocolors "^1.0.0"
-
 nanospinner@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/nanospinner/-/nanospinner-1.2.2.tgz#5a38f4410b5bf7a41585964bee74d32eab3e040b"
@@ -6772,16 +6748,6 @@ performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
   integrity sha1-Ywn04OX6kT7BxpMHrjZLSzd8nns=
-
-picocolors@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"
-  integrity sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==
-
-picocolors@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.1.0.tgz#5358b76a78cde483ba5cef6a9dc9671440b27d59"
-  integrity sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==
 
 picocolors@^1.1.1:
   version "1.1.1"
@@ -7715,19 +7681,6 @@ sisteransi@^1.0.5:
   resolved "https://registry.yarnpkg.com/sisteransi/-/sisteransi-1.0.5.tgz#134d681297756437cc05ca01370d3a7a571075ed"
   integrity sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==
 
-size-limit@11.1.6:
-  version "11.1.6"
-  resolved "https://registry.yarnpkg.com/size-limit/-/size-limit-11.1.6.tgz#75cd54f9326d1b065ebcb6ca9ec27294e7ccdfb1"
-  integrity sha512-S5ux2IB8rU26xwVgMskmknGMFkieaIAqDLuwgKiypk6oa4lFsie8yFPrzRFV+yrLDY2GddjXuCaVk5PveVOHiQ==
-  dependencies:
-    bytes-iec "^3.1.1"
-    chokidar "^4.0.1"
-    jiti "^2.0.0"
-    lilconfig "^3.1.2"
-    nanospinner "^1.1.0"
-    picocolors "^1.1.0"
-    tinyglobby "^0.2.7"
-
 size-limit@11.2.0:
   version "11.2.0"
   resolved "https://registry.yarnpkg.com/size-limit/-/size-limit-11.2.0.tgz#91324ca19d0a4c20442f68cc5e671373aa0ccf82"
@@ -8312,14 +8265,6 @@ tinyglobby@^0.2.11:
     fdir "^6.4.3"
     picomatch "^4.0.2"
 
-tinyglobby@^0.2.7:
-  version "0.2.9"
-  resolved "https://registry.yarnpkg.com/tinyglobby/-/tinyglobby-0.2.9.tgz#6baddd1b0fe416403efb0dd40442c7d7c03c1c66"
-  integrity sha512-8or1+BGEdk1Zkkw2ii16qSS7uVrQJPre5A9o/XkWPATkk23FZh/15BKFxPnlTy6vkljZxLqYCzzBMj30ZrSvjw==
-  dependencies:
-    fdir "^6.4.0"
-    picomatch "^4.0.2"
-
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -8687,10 +8632,10 @@ typedarray.prototype.slice@^1.0.5:
     typed-array-buffer "^1.0.3"
     typed-array-byte-offset "^1.0.4"
 
-typescript@5.8.2, typescript@^3.7.3:
-  version "5.8.2"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.8.2.tgz#8170b3702f74b79db2e5a96207c15e65807999e4"
-  integrity sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==
+typescript@5.9.3, typescript@^3.7.3:
+  version "5.9.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.9.3.tgz#5b4f59e15310ab17a216f5d6cf53ee476ede670f"
+  integrity sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==
 
 unbox-primitive@^1.0.2:
   version "1.0.2"
